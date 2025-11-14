@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Table(name = "usuários")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class User implements Serializable {

@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "clientes")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Client implements Serializable {
