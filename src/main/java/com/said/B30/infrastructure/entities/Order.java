@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "Pedidos")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Order implements Serializable {
