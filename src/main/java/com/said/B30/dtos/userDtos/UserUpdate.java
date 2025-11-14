@@ -1,4 +1,4 @@
-package com.said.B30.dtos;
+package com.said.B30.dtos.userDtos;
 
 import com.said.B30.infrastructure.entities.User;
 import org.mapstruct.Mapper;

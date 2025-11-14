@@ -1,7 +1,7 @@
 package com.said.B30.controllers;
 
-import com.said.B30.dtos.UserRequestDto;
-import com.said.B30.dtos.UserResponseDto;
+import com.said.B30.dtos.userDtos.UserRequestDto;
+import com.said.B30.dtos.userDtos.UserResponseDto;
 import com.said.B30.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/usuarios")
 @RequiredArgsConstructor
 public class UserController {
 
