@@ -5,6 +5,7 @@ import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class CategoryConverter implements AttributeConverter<Category, String> {
+
     @Override
     public String convertToDatabaseColumn(Category attribute) {
         if (attribute == null) {

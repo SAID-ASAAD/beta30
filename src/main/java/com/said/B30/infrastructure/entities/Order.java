@@ -28,7 +28,6 @@ public class Order implements Serializable {
     @Column(name = "descrição", nullable = false)
     private String description;
     @Column(name = "categoria", nullable = false)
-    @Enumerated(EnumType.STRING)
     private Category category;
     @Column(name = "data_do_pedido")
     private LocalDateTime orderDate;
@@ -37,7 +36,6 @@ public class Order implements Serializable {
     @Column(name = "valor_cobrado", nullable = false)
     private Double establishedValue;
     @Column(name = "status_do_pedido")
-    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     //@Column(name = "valor_serviço_terceiro")
     //private Double externalServiceValue;
@@ -49,6 +47,7 @@ public class Order implements Serializable {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
+
 
     @PrePersist
     private void prePersist(){
