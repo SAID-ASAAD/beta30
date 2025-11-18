@@ -4,7 +4,6 @@ import com.said.B30.dtos.userDtos.UserMapper;
 import com.said.B30.dtos.userDtos.UserRequestDto;
 import com.said.B30.dtos.userDtos.UserResponseDto;
 import com.said.B30.dtos.userDtos.UserUpdate;
-import com.said.B30.infrastructure.entities.User;
 import com.said.B30.infrastructure.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,13 +21,13 @@ public class UserService {
     }
 
     public void deleteUser(Long id){
-        User user = userRepository.getReferenceById(id);
+        var user = userRepository.getReferenceById(id);
         user.setActive(false);
         userRepository.saveAndFlush(user);
     }
 
     public UserResponseDto updateUserData(Long id, UserRequestDto userRequest){
-        User user = userRepository.getReferenceById(id);
+        var user = userRepository.getReferenceById(id);
         userUpdate.updateUserData(userRequest, user);
         return mapper.toResponse(userRepository.saveAndFlush(user));
     }

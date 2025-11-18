@@ -5,6 +5,7 @@ import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class OrderStatusConverter implements AttributeConverter<OrderStatus, String> {
+
     @Override
     public String convertToDatabaseColumn(OrderStatus attribute) {
         if (attribute == null) {

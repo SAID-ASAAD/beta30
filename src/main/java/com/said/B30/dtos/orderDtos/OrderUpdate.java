@@ -1,6 +1,6 @@
-package com.said.B30.dtos.clientDtos;
+package com.said.B30.dtos.orderDtos;
 
-import com.said.B30.infrastructure.entities.Client;
+import com.said.B30.infrastructure.entities.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -9,9 +9,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface CilentUpdate {
+public interface OrderUpdate {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "orders", ignore = true)
-    void updateClientData(ClientRequestDto clientRequest, @MappingTarget Client clientEntity);
+    @Mapping(target = "client", ignore = true)
+    @Mapping(target = "orderDate", ignore = true)
+    void updateOrderData(OrderUpdateRequestDto orderUpdateRequest, @MappingTarget Order orderEntity);
 }
