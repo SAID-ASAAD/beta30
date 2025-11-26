@@ -1,17 +1,20 @@
 package com.said.B30.dtos.userDtos;
 
 import com.said.B30.infrastructure.entities.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.stereotype.Component;
 
-import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
+@Component
+public class UserUpdate {
 
-@Mapper(componentModel = SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface UserUpdate {
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "active", ignore = true)
-    void updateUserData(UserRequestDto requestDto, @MappingTarget User userEntity);
+    public void updateUserData(UserUpdateDto dto, User entity) {
+        if (dto.name() != null && !dto.name().isBlank()) {
+            entity.setName(dto.name());
+        }
+        if (dto.email() != null && !dto.email().isBlank()) {
+            entity.setEmail(dto.email());
+        }
+        if (dto.password() != null && !dto.password().isBlank()) {
+            entity.setPassword(dto.password());
+        }
+    }
 }
