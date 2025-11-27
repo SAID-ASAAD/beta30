@@ -27,7 +27,7 @@ public class Client implements Serializable {
     private Long id;
     @Column(name = "nome", nullable = false)
     private String name;
-    @Column(name = "telefone", nullable = false)
+    @Column(name = "telefone", nullable = false, unique = true)
     private String telephoneNumber;
     private String email;
     @Column(name = "observações")

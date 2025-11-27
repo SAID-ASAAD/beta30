@@ -1,13 +1,13 @@
-package com.said.B30.services;
+package com.said.B30.businessrules.services;
 
-import com.said.B30.dtos.userDtos.UserMapper;
-import com.said.B30.dtos.userDtos.UserRequestDto;
-import com.said.B30.dtos.userDtos.UserResponseDto;
-import com.said.B30.dtos.userDtos.UserUpdate;
-import com.said.B30.dtos.userDtos.UserUpdateDto;
+import com.said.B30.businessrules.helpers.userHelpers.UserMapper;
+import com.said.B30.dtos.userdtos.UserRequestDto;
+import com.said.B30.dtos.userdtos.UserResponseDto;
+import com.said.B30.businessrules.helpers.userHelpers.UserUpdate;
+import com.said.B30.dtos.userdtos.UserUpdateDto;
 import com.said.B30.infrastructure.repositories.UserRepository;
-import com.said.B30.services.exceptions.DataEntryException;
-import com.said.B30.services.exceptions.ResourceNotFoundException;
+import com.said.B30.businessrules.exceptions.DataEntryException;
+import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class UserService {
             return mapper.toResponse(userRepository.saveAndFlush(mapper.toEntity(userRequest)));
         }
         catch (DataIntegrityViolationException e){
-            throw new DataEntryException("Certifique que o nome de usuário escolhido e o email informado não estão já cadastrados no sistema.");
+            throw new DataEntryException("Certifique que o nome de usuário escolhido e o email informado não estão já cadastrados em outro usuário do sistema.");
         }
     }
 
@@ -49,7 +49,7 @@ public class UserService {
                 userUpdate.updateUserData(userUpdateDto, user);
                 return mapper.toResponse(userRepository.saveAndFlush(user));
             } catch (DataIntegrityViolationException e) {
-                throw new DataEntryException("Certifique que o nome de usuário escolhido e o email informado não estão já cadastrados no sistema.");
+                throw new DataEntryException("Certifique que o nome de usuário e o email informados para atualização não estão já cadastrados em outro usuário do sistema.");
             }
         }
     }

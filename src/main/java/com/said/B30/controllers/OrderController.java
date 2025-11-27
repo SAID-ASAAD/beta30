@@ -1,9 +1,9 @@
 package com.said.B30.controllers;
 
-import com.said.B30.dtos.orderDtos.OrderRequestDto;
-import com.said.B30.dtos.orderDtos.OrderResponseDto;
-import com.said.B30.dtos.orderDtos.OrderUpdateRequestDto;
-import com.said.B30.services.OrderService;
+import com.said.B30.dtos.orderdtos.OrderRequestDto;
+import com.said.B30.dtos.orderdtos.OrderResponseDto;
+import com.said.B30.dtos.orderdtos.OrderUpdateRequestDto;
+import com.said.B30.businessrules.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

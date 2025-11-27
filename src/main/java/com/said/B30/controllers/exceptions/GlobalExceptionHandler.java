@@ -1,7 +1,7 @@
 package com.said.B30.controllers.exceptions;
 
-import com.said.B30.services.exceptions.DataEntryException;
-import com.said.B30.services.exceptions.ResourceNotFoundException;
+import com.said.B30.businessrules.exceptions.DataEntryException;
+import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,9 @@
 package com.said.B30.controllers;
 
-import com.said.B30.dtos.userDtos.UserRequestDto;
-import com.said.B30.dtos.userDtos.UserResponseDto;
-import com.said.B30.dtos.userDtos.UserUpdateDto;
-import com.said.B30.services.UserService;
+import com.said.B30.dtos.userdtos.UserRequestDto;
+import com.said.B30.dtos.userdtos.UserResponseDto;
+import com.said.B30.dtos.userdtos.UserUpdateDto;
+import com.said.B30.businessrules.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

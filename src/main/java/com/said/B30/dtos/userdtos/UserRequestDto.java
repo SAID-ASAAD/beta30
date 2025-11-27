@@ -1,4 +1,4 @@
-package com.said.B30.dtos.userDtos;
+package com.said.B30.dtos.userdtos;
 
 
 import jakarta.validation.constraints.Email;
