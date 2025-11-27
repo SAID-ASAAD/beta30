@@ -1,5 +1,6 @@
-package com.said.B30.dtos.userDtos;
+package com.said.B30.businessrules.helpers.userHelpers;
 
+import com.said.B30.dtos.userdtos.UserUpdateDto;
 import com.said.B30.infrastructure.entities.User;
 import org.springframework.stereotype.Component;
 

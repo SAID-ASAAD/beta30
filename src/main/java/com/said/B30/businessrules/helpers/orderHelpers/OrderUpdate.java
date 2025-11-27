@@ -1,5 +1,6 @@
-package com.said.B30.dtos.orderDtos;
+package com.said.B30.businessrules.helpers.orderHelpers;
 
+import com.said.B30.dtos.orderdtos.OrderUpdateRequestDto;
 import com.said.B30.infrastructure.entities.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

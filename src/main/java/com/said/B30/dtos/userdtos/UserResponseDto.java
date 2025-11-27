@@ -1,4 +1,4 @@
-package com.said.B30.dtos.userDtos;
+package com.said.B30.dtos.userdtos;
 
 public record UserResponseDto(Long id, String name, String email, boolean active) {
 }

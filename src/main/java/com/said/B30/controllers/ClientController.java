@@ -1,8 +1,10 @@
 package com.said.B30.controllers;
 
-import com.said.B30.dtos.clientDtos.ClientRequestDto;
-import com.said.B30.dtos.clientDtos.ClientResponseDto;
-import com.said.B30.services.ClientService;
+import com.said.B30.dtos.clientdtos.ClientRequestDto;
+import com.said.B30.dtos.clientdtos.ClientResponseDto;
+import com.said.B30.businessrules.services.ClientService;
+import com.said.B30.dtos.clientdtos.ClientUpdateDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<ClientResponseDto> createClient(@RequestBody ClientRequestDto clientRequest){
+    public ResponseEntity<ClientResponseDto> createClient(@Valid @RequestBody ClientRequestDto clientRequest){
         var obj = clientService.createClient(clientRequest);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(obj.id()).toUri();
@@ -37,7 +39,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientResponseDto> updateClientData(@PathVariable Long id, @RequestBody ClientRequestDto clientRequest){
-        return ResponseEntity.ok(clientService.updateClientData(id, clientRequest));
+    public ResponseEntity<ClientUpdateDto> updateClientData(@PathVariable Long id, @Valid @RequestBody ClientUpdateDto clientUpdate){
+        return ResponseEntity.ok(clientService.updateClientData(id, clientUpdate));
     }
 }

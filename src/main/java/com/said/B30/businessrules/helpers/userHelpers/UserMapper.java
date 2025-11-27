@@ -1,5 +1,7 @@
-package com.said.B30.dtos.userDtos;
+package com.said.B30.businessrules.helpers.userHelpers;
 
+import com.said.B30.dtos.userdtos.UserRequestDto;
+import com.said.B30.dtos.userdtos.UserResponseDto;
 import com.said.B30.infrastructure.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
