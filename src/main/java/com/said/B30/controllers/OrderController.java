@@ -4,6 +4,8 @@ import com.said.B30.dtos.orderdtos.OrderRequestDto;
 import com.said.B30.dtos.orderdtos.OrderResponseDto;
 import com.said.B30.dtos.orderdtos.OrderUpdateRequestDto;
 import com.said.B30.businessrules.services.OrderService;
+import com.said.B30.dtos.orderdtos.OrderUpdateResponseDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +22,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResponseDto> createClient(@RequestBody OrderRequestDto orderRequest){
+    public ResponseEntity<OrderResponseDto> createClient(@Valid @RequestBody OrderRequestDto orderRequest){
         var obj = orderService.createOrder(orderRequest);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(obj.id()).toUri();
@@ -38,7 +40,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderResponseDto> updateOrderData(@PathVariable Long id, @RequestBody OrderUpdateRequestDto orderUpdateRequest){
+    public ResponseEntity<OrderUpdateResponseDto> updateOrderData(@PathVariable Long id, @Valid @RequestBody OrderUpdateRequestDto orderUpdateRequest){
         return ResponseEntity.ok(orderService.updateOrderData(id, orderUpdateRequest));
     }
 

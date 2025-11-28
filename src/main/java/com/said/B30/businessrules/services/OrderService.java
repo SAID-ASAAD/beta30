@@ -1,5 +1,8 @@
 package com.said.B30.businessrules.services;
 
+import com.said.B30.businessrules.exceptions.DataEntryException;
+import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
+import com.said.B30.businessrules.helpers.orderHelpers.OrderUpdate;
 import com.said.B30.dtos.orderdtos.*;
 import com.said.B30.infrastructure.entities.Client;
 import com.said.B30.infrastructure.entities.Order;
@@ -7,8 +10,8 @@ import com.said.B30.infrastructure.enums.OrderStatus;
 import com.said.B30.infrastructure.repositories.ClientRepository;
 import com.said.B30.infrastructure.repositories.OrderRepository;
 import com.said.B30.businessrules.helpers.orderHelpers.OrderMapper;
-import com.said.B30.businessrules.helpers.orderHelpers.OrderUpdate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,15 +26,16 @@ public class OrderService {
     private final OrderUpdate orderUpdate;
 
     public OrderResponseDto createOrder(OrderRequestDto orderRequest){
-
-        Client client = clientRepository.findById(orderRequest.clientId()).orElseThrow();
+        Client client = clientRepository.findById(orderRequest.clientId())
+                .orElseThrow(() -> new ResourceNotFoundException(orderRequest.clientId()));
         Order order = mapper.toEntity(orderRequest);
         order.setClient(client);
         return mapper.toResponseDto(orderRepository.save(order));
+
     }
 
     public OrderResponseDto findOrderById(Long id){
-        return mapper.toResponseDto(orderRepository.findById(id).orElseThrow());
+        return mapper.toResponseDto(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
     }
 
     public List<OrderResponseDto> findAllOrders(){
@@ -39,15 +43,28 @@ public class OrderService {
         return orders.stream().map(mapper::toResponseDto).toList();
     }
 
-    public OrderResponseDto updateOrderData(Long id, OrderUpdateRequestDto orderUpdateRequest){
-        var order = orderRepository.getReferenceById(id);
-        orderUpdate.updateOrderData(orderUpdateRequest, order);
-        return mapper.toResponseDto(orderRepository.saveAndFlush(order));
+    public OrderUpdateResponseDto updateOrderData(Long id, OrderUpdateRequestDto orderUpdateRequest){
+        if (!orderRepository.existsById(id)){
+            throw new ResourceNotFoundException(id);
+        }else {
+            try {
+                var order = orderRepository.getReferenceById(id);
+                orderUpdate.updateOrderData(orderUpdateRequest, order);
+                return mapper.toUpdateResponseDto(orderRepository.saveAndFlush(order));
+            } catch (DataIntegrityViolationException e){
+                throw new DataEntryException("Certifique que a NOTA FISCAL cadastrada não esteja já cadastrada em outro pedido");
+            }
+
+        }
     }
 
     public void cancelOrder(Long id){
-        var order = orderRepository.getReferenceById(id);
-        order.setOrderStatus(OrderStatus.CANCELED);
-        orderRepository.saveAndFlush(order);
+        if (!orderRepository.existsById(id)){
+            throw new ResourceNotFoundException(id);
+        }else {
+            var order = orderRepository.getReferenceById(id);
+            order.setOrderStatus(OrderStatus.CANCELED);
+            orderRepository.saveAndFlush(order);
+        }
     }
 }

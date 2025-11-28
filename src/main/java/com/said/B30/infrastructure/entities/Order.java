@@ -1,5 +1,6 @@
 package com.said.B30.infrastructure.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.said.B30.infrastructure.enums.Category;
 import com.said.B30.infrastructure.enums.OrderStatus;
 import jakarta.persistence.*;
@@ -30,8 +31,10 @@ public class Order implements Serializable {
     @Column(name = "categoria", nullable = false)
     private Category category;
     @Column(name = "data_do_pedido")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime orderDate;
     @Column(name = "data_de_entrega", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime deliveryDate;
     @Column(name = "valor_cobrado", nullable = false)
     private Double establishedValue;
