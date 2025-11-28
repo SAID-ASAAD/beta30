@@ -2,18 +2,44 @@ package com.said.B30.businessrules.helpers.orderHelpers;
 
 import com.said.B30.dtos.orderdtos.OrderUpdateRequestDto;
 import com.said.B30.infrastructure.entities.Order;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import com.said.B30.infrastructure.repositories.ClientRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
+@Component
+@RequiredArgsConstructor
+public class OrderUpdate {
 
-@Mapper(componentModel = SPRING, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-public interface OrderUpdate {
+    private final ClientRepository repository;
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "client", ignore = true)
-    @Mapping(target = "orderDate", ignore = true)
-    void updateOrderData(OrderUpdateRequestDto orderUpdateRequest, @MappingTarget Order orderEntity);
+    public void updateOrderData(OrderUpdateRequestDto dto, Order entity){
+        if (dto.category() != null){
+            entity.setCategory(dto.category());
+        }
+        if (dto.description() != null && !dto.description().isBlank()){
+            entity.setDescription(dto.description());
+        }
+        if (dto.orderDate() != null){
+            entity.setOrderDate(dto.orderDate());
+        }
+        if (dto.deliveryDate() != null){
+            entity.setDeliveryDate(dto.deliveryDate());
+        }
+        if (dto.establishedValue() != null){
+            entity.setEstablishedValue(dto.establishedValue());
+        }
+        if (dto.clientId() != null){
+            var client = repository.getReferenceById(dto.clientId());
+            entity.setClient(client);
+        }
+        if (dto.invoice() != null){
+            entity.setInvoice(dto.invoice());
+        }
+        if (dto.productionProcessNote() != null){
+            entity.setProductionProcessNote(dto.productionProcessNote());
+        }
+        if (dto.orderStatus() != null){
+            entity.setOrderStatus(dto.orderStatus());
+        }
+    }
 }

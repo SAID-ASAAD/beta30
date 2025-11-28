@@ -3,7 +3,8 @@ package com.said.B30.controllers;
 import com.said.B30.dtos.clientdtos.ClientRequestDto;
 import com.said.B30.dtos.clientdtos.ClientResponseDto;
 import com.said.B30.businessrules.services.ClientService;
-import com.said.B30.dtos.clientdtos.ClientUpdateDto;
+import com.said.B30.dtos.clientdtos.ClientUpdateRequestDto;
+import com.said.B30.dtos.clientdtos.ClientUpdateResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientUpdateDto> updateClientData(@PathVariable Long id, @Valid @RequestBody ClientUpdateDto clientUpdate){
+    public ResponseEntity<ClientUpdateResponseDto> updateClientData(@PathVariable Long id, @Valid @RequestBody ClientUpdateRequestDto clientUpdate){
         return ResponseEntity.ok(clientService.updateClientData(id, clientUpdate));
     }
 }
