@@ -37,4 +37,9 @@ public class Client implements Serializable {
     @OneToMany(mappedBy = "client")
     @Builder.Default
     private Set<Order> orders = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "client")
+    @Builder.Default
+    private Set<Product> products = new HashSet<>();
 }
