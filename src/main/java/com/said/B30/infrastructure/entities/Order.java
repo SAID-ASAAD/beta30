@@ -36,12 +36,14 @@ public class Order implements Serializable {
     @Column(name = "data_de_entrega", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime deliveryDate;
+    @Column(name = "valor_de_material")
+    private Double materialValue;
     @Column(name = "valor_cobrado", nullable = false)
     private Double establishedValue;
+    @Column(name = "valor_serviço_terceiro", nullable = false)
+    private Double externalServiceValue;
     @Column(name = "status_do_pedido")
     private OrderStatus orderStatus;
-    //@Column(name = "valor_serviço_terceiro")
-    //private Double externalServiceValue;
     @Column(name = "observações_da_produção")
     private String productionProcessNote;
     @Column(name = "nota_fiscal")
