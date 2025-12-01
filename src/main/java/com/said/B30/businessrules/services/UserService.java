@@ -1,9 +1,9 @@
 package com.said.B30.businessrules.services;
 
-import com.said.B30.businessrules.helpers.userHelpers.UserMapper;
+import com.said.B30.businessrules.helpers.userhelpers.UserMapper;
 import com.said.B30.dtos.userdtos.UserRequestDto;
 import com.said.B30.dtos.userdtos.UserResponseDto;
-import com.said.B30.businessrules.helpers.userHelpers.UserUpdate;
+import com.said.B30.businessrules.helpers.userhelpers.UserUpdate;
 import com.said.B30.dtos.userdtos.UserUpdateDto;
 import com.said.B30.infrastructure.repositories.UserRepository;
 import com.said.B30.businessrules.exceptions.DataEntryException;

@@ -1,4 +1,4 @@
-package com.said.B30.businessrules.helpers.userHelpers;
+package com.said.B30.businessrules.helpers.userhelpers;
 
 import com.said.B30.dtos.userdtos.UserRequestDto;
 import com.said.B30.dtos.userdtos.UserResponseDto;
