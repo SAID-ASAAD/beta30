@@ -1,4 +1,4 @@
-package com.said.B30.businessrules.helpers.orderHelpers;
+package com.said.B30.businessrules.helpers.orderhelpers;
 
 import com.said.B30.dtos.orderdtos.OrderUpdateRequestDto;
 import com.said.B30.infrastructure.entities.Order;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OrderUpdate {
 
-    private final ClientRepository repository;
+    private final ClientRepository clientRepository;
 
     public void updateOrderData(OrderUpdateRequestDto dto, Order entity){
         if (dto.category() != null){
@@ -29,7 +29,7 @@ public class OrderUpdate {
             entity.setEstablishedValue(dto.establishedValue());
         }
         if (dto.clientId() != null){
-            var client = repository.getReferenceById(dto.clientId());
+            var client = clientRepository.getReferenceById(dto.clientId());
             entity.setClient(client);
         }
         if (dto.invoice() != null){

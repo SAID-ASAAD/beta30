@@ -1,7 +1,7 @@
 package com.said.B30.businessrules.services;
 
-import com.said.B30.businessrules.helpers.clientHelpers.ClientMapper;
-import com.said.B30.businessrules.helpers.clientHelpers.ClientUpdate;
+import com.said.B30.businessrules.helpers.clienthelpers.ClientMapper;
+import com.said.B30.businessrules.helpers.clienthelpers.ClientUpdate;
 import com.said.B30.dtos.clientdtos.ClientRequestDto;
 import com.said.B30.dtos.clientdtos.ClientResponseDto;
 import com.said.B30.dtos.clientdtos.ClientUpdateRequestDto;

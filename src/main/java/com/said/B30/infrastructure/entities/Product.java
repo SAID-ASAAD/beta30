@@ -17,10 +17,11 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Setter(AccessLevel.NONE)
     private Long id;
     @Column(name = "descrição", nullable = false)
     private String description;
-    @Column(name = "observações_da_produção", nullable = false)
+    @Column(name = "observações_da_produção")
     private String productionProcessNote;
     @Column(name = "data_de_produção")
     private LocalDate productionDate;
@@ -37,7 +38,7 @@ public class Product {
     @Column(name = "nota_fiscal")
     private String invoice;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
 

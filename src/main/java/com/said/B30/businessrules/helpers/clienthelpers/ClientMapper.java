@@ -1,4 +1,4 @@
-package com.said.B30.businessrules.helpers.clientHelpers;
+package com.said.B30.businessrules.helpers.clienthelpers;
 
 import com.said.B30.dtos.clientdtos.ClientRequestDto;
 import com.said.B30.dtos.clientdtos.ClientResponseDto;
@@ -12,6 +12,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(componentModel = SPRING)
 public interface ClientMapper {
 
+    @Mapping(target = "products", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "orders", ignore = true)
     Client toEntity(ClientRequestDto clientRequest);

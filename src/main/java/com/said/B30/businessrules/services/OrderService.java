@@ -2,14 +2,14 @@ package com.said.B30.businessrules.services;
 
 import com.said.B30.businessrules.exceptions.DataEntryException;
 import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
-import com.said.B30.businessrules.helpers.orderHelpers.OrderUpdate;
+import com.said.B30.businessrules.helpers.orderhelpers.OrderUpdate;
 import com.said.B30.dtos.orderdtos.*;
 import com.said.B30.infrastructure.entities.Client;
 import com.said.B30.infrastructure.entities.Order;
 import com.said.B30.infrastructure.enums.OrderStatus;
 import com.said.B30.infrastructure.repositories.ClientRepository;
 import com.said.B30.infrastructure.repositories.OrderRepository;
-import com.said.B30.businessrules.helpers.orderHelpers.OrderMapper;
+import com.said.B30.businessrules.helpers.orderhelpers.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException(orderRequest.clientId()));
         Order order = mapper.toEntity(orderRequest);
         order.setClient(client);
-        return mapper.toResponseDto(orderRepository.save(order));
+        return mapper.toResponseDto(orderRepository.saveAndFlush(order));
 
     }
 

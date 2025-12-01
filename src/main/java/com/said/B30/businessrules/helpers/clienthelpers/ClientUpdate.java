@@ -1,4 +1,4 @@
-package com.said.B30.businessrules.helpers.clientHelpers;
+package com.said.B30.businessrules.helpers.clienthelpers;
 
 import com.said.B30.dtos.clientdtos.ClientUpdateRequestDto;
 import com.said.B30.infrastructure.entities.Client;
