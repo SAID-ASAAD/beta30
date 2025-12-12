@@ -1,6 +1,7 @@
 package com.said.B30.controllers.exceptions;
 
 import com.said.B30.businessrules.exceptions.DataEntryException;
+import com.said.B30.businessrules.exceptions.DeletionNotAllowedException;
 import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class GlobalExceptionHandler {
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> missingData(MethodArgumentNotValidException e, HttpServletRequest request) {
         String error =  "Dados inválidos!";
@@ -44,6 +46,14 @@ public class GlobalExceptionHandler {
         String error = "Invalid JSON";
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError err = new StandardError(Instant.now(), status.value(), error, "Json inválido", request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(DeletionNotAllowedException.class)
+    public ResponseEntity<StandardError> deletionNotAllowed(DeletionNotAllowedException e, HttpServletRequest request) {
+        String error =  "Conflito com dados do sistema!";
+        HttpStatus status = HttpStatus.CONFLICT;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 

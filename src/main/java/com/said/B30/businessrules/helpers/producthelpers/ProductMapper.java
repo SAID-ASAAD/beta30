@@ -13,9 +13,9 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(componentModel = SPRING)
 public interface ProductMapper {
 
+    @Mapping(target = "establishedValue", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "invoice", ignore = true)
-    @Mapping(target = "productionProcessNote", ignore = true)
     @Mapping(target = "productionDate", ignore = true)
     @Mapping(target = "productStatus", ignore = true)
     @Mapping(target = "saleDate", ignore = true)
