@@ -1,5 +1,8 @@
 package com.said.B30.businessrules.services;
 
+import com.said.B30.businessrules.exceptions.DataEntryException;
+import com.said.B30.businessrules.exceptions.DeletionNotAllowedException;
+import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import com.said.B30.businessrules.helpers.producthelpers.ProductMapper;
 import com.said.B30.businessrules.helpers.producthelpers.ProductUpdate;
 import com.said.B30.dtos.productdtos.*;
@@ -27,13 +30,22 @@ public class ProductService {
     }
 
     public ProductSoldResponseDto sellProduct(Long productId, Long clientId, Double establishedValue){
-        var product = productRepository.getReferenceById(productId);
-        var client = clientRepository.getReferenceById(clientId);
-        product.setProductStatus(ProductStatus.SOLD);
-        product.setEstablishedValue(establishedValue);
-        product.setClient(client);
-        product.setSaleDate(LocalDate.now());
-        return mapper.toSoldResponse(productRepository.saveAndFlush(product));
+        if (productId == null || clientId == null || establishedValue == null){
+            throw new DataEntryException("Certifique que o VALOR COBRADO, o CLIENTE (comprador) e o PRODUTO a ser vendido estão devidamente indicados na operaçaão");
+        }else{
+            var product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(productId));
+            var client = clientRepository.findById(clientId).orElseThrow(() -> new ResourceNotFoundException(clientId));
+            if (product.getProductStatus() == ProductStatus.SOLD){
+                throw new DataEntryException("Não é possível vender novamente um produto que já foi vendido");
+            }
+            else{
+                product.setProductStatus(ProductStatus.SOLD);
+                product.setEstablishedValue(establishedValue);
+                product.setClient(client);
+                product.setSaleDate(LocalDate.now());
+                return mapper.toSoldResponse(productRepository.saveAndFlush(product));
+            }
+        }
     }
 
     public List<ProductFullResponseDto> findAllProducts(){
@@ -42,18 +54,22 @@ public class ProductService {
     }
 
     public ProductFullResponseDto findProductById(Long id){
-        return mapper.toFullResponse(productRepository.findById(id).orElseThrow());
+        return mapper.toFullResponse(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
     }
 
     public ProductFullResponseDto updateData(Long id, ProductUpdateRequestDto requestDto){
-        var product = productRepository.getReferenceById(id);
+        var product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
         productUpdate.updateProductData(requestDto, product);
         return mapper.toFullResponse(productRepository.saveAndFlush(product));
     }
 
     public void deleteProduct(Long id){
-        //validar se o produto já não está vendido e ver como lidar com essa troca de status e dados financeiros
-        var product = productRepository.getReferenceById(id);
-        productRepository.delete(product);
+        var product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        if (product.getProductStatus() == ProductStatus.SOLD){
+            throw new DeletionNotAllowedException("Não é possível deletar um produto que já foi vendido");
+        }
+        else {
+            productRepository.delete(product);
+        }
     }
 }

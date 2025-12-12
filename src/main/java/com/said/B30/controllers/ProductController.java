@@ -2,6 +2,7 @@ package com.said.B30.controllers;
 
 import com.said.B30.businessrules.services.ProductService;
 import com.said.B30.dtos.productdtos.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> registerProduct(@RequestBody ProductRequestDto productRequest){
+    public ResponseEntity<ProductResponseDto> registerProduct(@Valid @RequestBody ProductRequestDto productRequest){
         var obj = productService.registerProduct(productRequest);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(obj.id()).toUri();
@@ -42,7 +43,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductFullResponseDto> updateData(@PathVariable Long id, @RequestBody ProductUpdateRequestDto requestDto){
+    public ResponseEntity<ProductFullResponseDto> updateData(@PathVariable Long id, @Valid @RequestBody ProductUpdateRequestDto requestDto){
         return ResponseEntity.ok(productService.updateData(id, requestDto));
     }
 

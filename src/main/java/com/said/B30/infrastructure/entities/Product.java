@@ -31,7 +31,9 @@ public class Product {
     private Double materialValue;
     @Column(name = "valor_serviço_terceiro", nullable = false)
     private Double externalServiceValue;
-    @Column(name = "valor_cobrado", nullable = false)
+    @Column(name = "valor_sugerido", nullable = false)
+    private Double preEstablishedValue;
+    @Column(name = "valor_cobrado")
     private Double establishedValue;
     @Column(name = "status_do_produto", nullable = false)
     private ProductStatus productStatus;

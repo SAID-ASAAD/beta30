@@ -17,6 +17,8 @@ public record OrderRequestDto(
                               LocalDateTime deliveryDate,
                               @NotNull(message = "O VALOR do pedido deve ser informado.")
                               Double establishedValue,
+                              @NotNull(message = "O VALOR DE SERVIÇO DE TERCEIROS do pedido deve ser informado. Caso não seja o caso, insira 0(zero)")
+                              Double externalServiceValue,
                               @NotNull(message = "O ID DO CLIENTE do pedido deve ser informada.")
                               Long clientId) {
 
