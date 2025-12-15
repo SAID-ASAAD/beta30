@@ -1,13 +1,13 @@
-package com.said.B30.infrastructure.enums;
+package com.said.B30.infrastructure.enums.enumconverters;
 
+import com.said.B30.infrastructure.enums.PaymentStatus;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class OrderStatusConverter implements AttributeConverter<OrderStatus, String> {
-
+public class PaymentStatusConverter implements AttributeConverter<PaymentStatus, String>{
     @Override
-    public String convertToDatabaseColumn(OrderStatus attribute) {
+    public String convertToDatabaseColumn(PaymentStatus attribute) {
         if (attribute == null) {
             return null;
         }
@@ -15,11 +15,11 @@ public class OrderStatusConverter implements AttributeConverter<OrderStatus, Str
     }
 
     @Override
-    public OrderStatus convertToEntityAttribute(String dbData) {
+    public PaymentStatus convertToEntityAttribute(String dbData) {
         if (dbData == null) {
             return null;
         }
-        for (OrderStatus status : OrderStatus.values()){
+        for (PaymentStatus status : PaymentStatus.values()){
             if(status.getDescription().equals(dbData))
                 return status;
         }

@@ -12,8 +12,9 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(componentModel = SPRING)
 public interface OrderMapper {
 
+    @Mapping(target = "payments", ignore = true)
+    @Mapping(target = "paymentStatus", ignore = true)
     @Mapping(target = "materialValue", ignore = true)
-    @Mapping(target = "externalServiceValue", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "invoice", ignore = true)
     @Mapping(target = "productionProcessNote", ignore = true)

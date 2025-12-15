@@ -1,5 +1,6 @@
-package com.said.B30.infrastructure.enums;
+package com.said.B30.infrastructure.enums.enumconverters;
 
+import com.said.B30.infrastructure.enums.Category;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
