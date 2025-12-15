@@ -1,10 +1,11 @@
-package com.said.B30.infrastructure.enums;
+package com.said.B30.infrastructure.enums.enumconverters;
 
+import com.said.B30.infrastructure.enums.ProductStatus;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class ProductConverter implements AttributeConverter<ProductStatus, String> {
+public class ProductStatusConverter implements AttributeConverter<ProductStatus, String> {
 
     @Override
     public String convertToDatabaseColumn(ProductStatus attribute) {

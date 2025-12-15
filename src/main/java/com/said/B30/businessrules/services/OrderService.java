@@ -6,6 +6,7 @@ import com.said.B30.businessrules.helpers.orderhelpers.OrderUpdate;
 import com.said.B30.dtos.orderdtos.*;
 import com.said.B30.infrastructure.entities.Client;
 import com.said.B30.infrastructure.entities.Order;
+import com.said.B30.infrastructure.entities.Payment;
 import com.said.B30.infrastructure.enums.OrderStatus;
 import com.said.B30.infrastructure.repositories.ClientRepository;
 import com.said.B30.infrastructure.repositories.OrderRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,8 +32,15 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException(orderRequest.clientId()));
         Order order = mapper.toEntity(orderRequest);
         order.setClient(client);
-        return mapper.toResponseDto(orderRepository.saveAndFlush(order));
 
+        if(order.getDeposit() != null && order.getDeposit() > 0){
+            Payment initialPayment = new Payment();
+            initialPayment.setAmount(order.getDeposit());
+            initialPayment.setPaymentDate(LocalDate.now());
+            order.addPayment(initialPayment);
+        }
+
+        return mapper.toResponseDto(orderRepository.saveAndFlush(order));
     }
 
     public OrderResponseDto findOrderById(Long id){

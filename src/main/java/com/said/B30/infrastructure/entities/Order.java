@@ -3,12 +3,15 @@ package com.said.B30.infrastructure.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.said.B30.infrastructure.enums.Category;
 import com.said.B30.infrastructure.enums.OrderStatus;
+import com.said.B30.infrastructure.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Pedidos")
@@ -46,6 +49,10 @@ public class Order implements Serializable {
     private OrderStatus orderStatus;
     @Column(name = "observações_da_produção")
     private String productionProcessNote;
+    @Column(name = "sinal", nullable = false)
+    private Double deposit;
+    @Column(name = "status_do_pagamento")
+    private PaymentStatus paymentStatus;
     @Column(name = "nota_fiscal")
     private String invoice;
 
@@ -53,11 +60,27 @@ public class Order implements Serializable {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<Payment> payments = new HashSet<>();
+
+    public void addPayment(Payment payment) {
+        payments.add(payment);
+        payment.setOrder(this);
+    }
 
     @PrePersist
     private void prePersist(){
         this.orderDate = LocalDateTime.now();
         this.orderStatus = OrderStatus.IN_PROGRESS;
+
+        if(deposit == 0){
+            this.paymentStatus = PaymentStatus.PENDING_DEPOSIT;
+        } else if (deposit > 0 && deposit < establishedValue) {
+            this.paymentStatus = PaymentStatus.DEPOSIT_PAID;
+        } else if (deposit.equals(establishedValue)) {
+            this.paymentStatus = PaymentStatus.PAYMENT_OK;
+        }
     }
 
 }
