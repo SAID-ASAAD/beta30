@@ -9,7 +9,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,11 +34,11 @@ public class Order implements Serializable {
     @Column(name = "categoria", nullable = false)
     private Category category;
     @Column(name = "data_do_pedido")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime orderDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate orderDate;
     @Column(name = "data_de_entrega", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime deliveryDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate deliveryDate;
     @Column(name = "valor_de_material")
     private Double materialValue;
     @Column(name = "valor_cobrado", nullable = false)
@@ -71,7 +71,7 @@ public class Order implements Serializable {
 
     @PrePersist
     private void prePersist(){
-        this.orderDate = LocalDateTime.now();
+        this.orderDate = LocalDate.now();
         this.orderStatus = OrderStatus.IN_PROGRESS;
 
         if(deposit == 0){

@@ -8,14 +8,17 @@ import com.said.B30.infrastructure.entities.Client;
 import com.said.B30.infrastructure.entities.Order;
 import com.said.B30.infrastructure.entities.Payment;
 import com.said.B30.infrastructure.enums.OrderStatus;
+import com.said.B30.infrastructure.enums.PaymentStatus;
 import com.said.B30.infrastructure.repositories.ClientRepository;
 import com.said.B30.infrastructure.repositories.OrderRepository;
 import com.said.B30.businessrules.helpers.orderhelpers.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -52,6 +55,15 @@ public class OrderService {
         return orders.stream().map(mapper::toResponseDto).toList();
     }
 
+    @Transactional
+    public void updatePaymentStatusForOverdueOrders() {
+        List<Order> overdueOrders = orderRepository.findOverdueOrders(LocalDateTime.now(), PaymentStatus.DEPOSIT_PAID);
+        for (Order order : overdueOrders) {
+            order.setPaymentStatus(PaymentStatus.PENDING_PAYMENT);
+        }
+        orderRepository.saveAll(overdueOrders);
+    }
+
     public OrderUpdateResponseDto updateOrderData(Long id, OrderUpdateRequestDto orderUpdateRequest){
         if (!orderRepository.existsById(id)){
             throw new ResourceNotFoundException(id);
@@ -61,7 +73,7 @@ public class OrderService {
                 orderUpdate.updateOrderData(orderUpdateRequest, order);
                 return mapper.toUpdateResponseDto(orderRepository.saveAndFlush(order));
             } catch (DataIntegrityViolationException e){
-                throw new DataEntryException("Certifique que a NOTA FISCAL cadastrada não esteja já cadastrada em outro pedido");
+                throw new DataEntryException("xxxxxxxxxxxxxxxxxxxxxxx");
             }
 
         }

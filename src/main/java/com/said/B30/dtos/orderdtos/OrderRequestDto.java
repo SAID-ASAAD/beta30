@@ -5,7 +5,7 @@ import com.said.B30.infrastructure.enums.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record OrderRequestDto(
                               @NotNull(message = "A CATEGORIA do pedido deve ser informada.")
@@ -13,8 +13,8 @@ public record OrderRequestDto(
                               @NotBlank(message = "A DESCRIÇÃO do pedido deve ser informada.")
                               String description,
                               @NotNull(message = "A DATA DE ENTREGA do pedido deve ser informada.")
-                              @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-                              LocalDateTime deliveryDate,
+                              @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+                              LocalDate deliveryDate,
                               @NotNull(message = "O VALOR do pedido deve ser informado.")
                               Double establishedValue,
                               @NotNull(message = "O valor do SINAL pago do pedido deve ser informado. Caso não seja o caso, insira 0(zero)")
