@@ -23,7 +23,9 @@ public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @Column(name = "valor", nullable = false)
     Double amount;
+    @Column(name = "data_do_pagamento", nullable = false)
     LocalDate paymentDate;
 
     @JsonIgnore
