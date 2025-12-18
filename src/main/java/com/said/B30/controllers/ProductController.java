@@ -28,8 +28,8 @@ public class ProductController {
 
     @PutMapping("/venda/{productId}")
     public ResponseEntity<ProductSoldResponseDto> sellProduct(
-            @PathVariable Long productId, @RequestParam Long clientId, Double establishedValue){
-        return ResponseEntity.ok(productService.sellProduct(productId, clientId, establishedValue));
+            @PathVariable Long productId, @RequestParam Long clientId, Double establishedValue, Double initialPayment){
+        return ResponseEntity.ok(productService.sellProduct(productId, clientId, establishedValue, initialPayment));
     }
 
     @GetMapping

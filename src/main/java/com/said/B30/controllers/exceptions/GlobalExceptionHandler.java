@@ -2,6 +2,7 @@ package com.said.B30.controllers.exceptions;
 
 import com.said.B30.businessrules.exceptions.DataEntryException;
 import com.said.B30.businessrules.exceptions.DeletionNotAllowedException;
+import com.said.B30.businessrules.exceptions.PaymentNotAllowedException;
 import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<StandardError> deletionNotAllowed(DeletionNotAllowedException e, HttpServletRequest request) {
         String error =  "Conflito com dados do sistema!";
         HttpStatus status = HttpStatus.CONFLICT;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(PaymentNotAllowedException.class)
+    public ResponseEntity<StandardError> PaymentNotAllowed(PaymentNotAllowedException e, HttpServletRequest request) {
+        String error =  "Conflito com dados do sistema!";
+        HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
         StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }

@@ -1,6 +1,7 @@
 package com.said.B30.dtos.productdtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.said.B30.infrastructure.enums.PaymentStatus;
 import com.said.B30.infrastructure.enums.ProductStatus;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public record ProductFullResponseDto(Long id,
                                      Double preEstablishedValue,
                                      Double establishedValue,
                                      ProductStatus productStatus,
+                                     PaymentStatus paymentStatus,
                                      String invoice,
                                      Long clientId) {
 }
