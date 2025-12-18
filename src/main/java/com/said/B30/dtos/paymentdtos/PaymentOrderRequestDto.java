@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record PaymentRequestDto(
+public record PaymentOrderRequestDto(
                                 @NotNull(message = "O VALOR do pagamento deve ser informado.")
                                 Double amount,
                                 @NotNull(message = "O ID DO PEDIDO de referência ao pagamento deve ser informado.")

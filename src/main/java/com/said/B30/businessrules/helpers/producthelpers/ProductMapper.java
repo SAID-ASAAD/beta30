@@ -13,6 +13,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(componentModel = SPRING)
 public interface ProductMapper {
 
+    @Mapping(target = "payments", ignore = true)
+    @Mapping(target = "paymentStatus", ignore = true)
     @Mapping(target = "establishedValue", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "invoice", ignore = true)
