@@ -3,7 +3,9 @@ package com.said.B30.businessrules.services;
 import com.said.B30.businessrules.helpers.paymenthelpers.PaymentMapper;
 import com.said.B30.dtos.paymentdtos.PaymentResponseDto;
 import com.said.B30.infrastructure.entities.Payment;
+import com.said.B30.infrastructure.repositories.OrderRepository;
 import com.said.B30.infrastructure.repositories.PaymentRepository;
+import com.said.B30.infrastructure.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,8 @@ import java.util.List;
 public class FinancialStatisticsService {
 
     private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
     private final PaymentMapper mapper;
 
     @Transactional(readOnly = true)
@@ -49,5 +53,45 @@ public class FinancialStatisticsService {
     @Transactional(readOnly = true)
     public Double getRevenueByClientId(Long clientId){
         return paymentRepository.totalRevenueByClientId(clientId);
+    }
+
+    @Transactional(readOnly = true)
+    public Double getTotalReceivable() {
+        Double ordersReceivable = orderRepository.totalReceivable();
+        Double productsReceivable = productRepository.totalReceivable();
+        
+        if (ordersReceivable == null) ordersReceivable = 0.0;
+        if (productsReceivable == null) productsReceivable = 0.0;
+
+        return ordersReceivable + productsReceivable;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getReceivableByDateRange(LocalDate startDate, LocalDate endDate) {
+        Double receivable = orderRepository.totalReceivableByDateRange(startDate, endDate);
+        return receivable != null ? receivable : 0.0;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getReceivableByClientId(Long clientId) {
+        Double ordersReceivable = orderRepository.totalReceivableByClientId(clientId);
+        Double productsReceivable = productRepository.totalReceivableByClientId(clientId);
+
+        if (ordersReceivable == null) ordersReceivable = 0.0;
+        if (productsReceivable == null) productsReceivable = 0.0;
+
+        return ordersReceivable + productsReceivable;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getReceivableByOrderId(Long orderId) {
+        Double receivable = orderRepository.getReceivableAmount(orderId);
+        return receivable != null ? receivable : 0.0;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getReceivableByProductId(Long productId) {
+        Double receivable = productRepository.getReceivableAmount(productId);
+        return receivable != null ? receivable : 0.0;
     }
 }

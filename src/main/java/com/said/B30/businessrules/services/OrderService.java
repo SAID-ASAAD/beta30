@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -54,7 +53,7 @@ public class OrderService {
 
     @Transactional
     public void updatePaymentStatusForOverdueOrders() {
-        List<Order> overdueOrders = orderRepository.findOverdueOrders(LocalDateTime.now(), PaymentStatus.DEPOSIT_PAID);
+        List<Order> overdueOrders = orderRepository.findOverdueOrders(LocalDate.now(), PaymentStatus.DEPOSIT_PAID);
         for (Order order : overdueOrders) {
             order.setPaymentStatus(PaymentStatus.PENDING_PAYMENT);
         }
