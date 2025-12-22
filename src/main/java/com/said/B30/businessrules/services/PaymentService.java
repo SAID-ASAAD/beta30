@@ -37,7 +37,7 @@ public class PaymentService {
 
         order.addPayment(payment);
         updateOrderPaymentStatus(order);
-        orderRepository.save(order);
+        orderRepository.saveAndFlush(order);
         return mapper.toResponsePO(payment);
     }
 
@@ -53,7 +53,7 @@ public class PaymentService {
         Payment payment = mapper.toEntity(paymentRequest);
         product.addPayment(payment);
         updateProductPaymentStatus(product);
-        productRepository.save(product);
+        productRepository.saveAndFlush(product);
         return mapper.toResponsePP(payment);
     }
 
@@ -116,12 +116,12 @@ public class PaymentService {
             Order order = payment.getOrder();
             order.getPayments().remove(payment);
             updateOrderPaymentStatus(order);
-            orderRepository.save(order);
+            orderRepository.saveAndFlush(order);
         } else{
             Product product = payment.getProduct();
             product.getPayments().remove(payment);
             updateProductPaymentStatus(product);
-            productRepository.save(product);
+            productRepository.saveAndFlush(product);
         }
     }
 }

@@ -1,9 +1,6 @@
 package com.said.B30.businessrules.helpers.paymenthelpers;
 
-import com.said.B30.dtos.paymentdtos.PaymentOrderRequestDto;
-import com.said.B30.dtos.paymentdtos.PaymentOrderResponseDto;
-import com.said.B30.dtos.paymentdtos.PaymentProductRequestDto;
-import com.said.B30.dtos.paymentdtos.PaymentProductResponseDto;
+import com.said.B30.dtos.paymentdtos.*;
 import com.said.B30.infrastructure.entities.Payment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,4 +25,8 @@ public interface PaymentMapper {
 
     @Mapping(target = "productId", source = "product.id")
     PaymentProductResponseDto toResponsePP(Payment paymentEntity);
+
+    @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "orderId", source = "order.id")
+    PaymentResponseDto toResponse(Payment paymentEntity);
 }
