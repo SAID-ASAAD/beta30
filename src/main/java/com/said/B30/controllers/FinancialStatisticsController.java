@@ -53,4 +53,31 @@ public class FinancialStatisticsController {
     public ResponseEntity<Double> getRevenueByClientId(@RequestParam Long clientId){
         return ResponseEntity.ok(financialStatisticsService.getRevenueByClientId(clientId));
     }
+
+    @GetMapping("/total_a_receber")
+    public ResponseEntity<Double> getTotalReceivable(){
+        return ResponseEntity.ok(financialStatisticsService.getTotalReceivable());
+    }
+
+    @GetMapping("/a_receber_por_data")
+    public ResponseEntity<Double> getReceivableByDateRange(
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
+        return ResponseEntity.ok(financialStatisticsService.getReceivableByDateRange(startDate, endDate));
+    }
+
+    @GetMapping("/a_receber_por_cliente")
+    public ResponseEntity<Double> getReceivableByClientId(@RequestParam Long clientId){
+        return ResponseEntity.ok(financialStatisticsService.getReceivableByClientId(clientId));
+    }
+
+    @GetMapping("/a_receber_por_pedido")
+    public ResponseEntity<Double> getReceivableByOrderId(@RequestParam Long orderId){
+        return ResponseEntity.ok(financialStatisticsService.getReceivableByOrderId(orderId));
+    }
+
+    @GetMapping("/a_receber_por_produto")
+    public ResponseEntity<Double> getReceivableByProductId(@RequestParam Long productId){
+        return ResponseEntity.ok(financialStatisticsService.getReceivableByProductId(productId));
+    }
 }
