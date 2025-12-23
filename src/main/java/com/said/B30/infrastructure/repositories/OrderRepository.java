@@ -29,4 +29,16 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT COALESCE(o.establishedValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o), 0) " +
             "FROM Order o WHERE o.id = :orderId")
     Double getReceivableAmount(@Param("orderId") Long orderId);
+
+    @Query("SELECT COALESCE((SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o) - (COALESCE(o.materialValue, 0) + COALESCE(o.externalServiceValue, 0)), 0) " +
+            "FROM Order o WHERE o.id = :orderId")
+    Double getProfitByOrderId(@Param("orderId") Long orderId);
+
+    @Query("SELECT COALESCE(SUM((SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o) - (COALESCE(o.materialValue, 0) + COALESCE(o.externalServiceValue, 0))), 0) " +
+            "FROM Order o")
+    Double getTotalProfit();
+
+    @Query("SELECT COALESCE(SUM((SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o) - (COALESCE(o.materialValue, 0) + COALESCE(o.externalServiceValue, 0))), 0) " +
+            "FROM Order o WHERE o.deliveryDate BETWEEN :startDate AND :endDate")
+    Double getTotalProfitByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

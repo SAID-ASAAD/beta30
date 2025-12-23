@@ -43,7 +43,7 @@ public class Order implements Serializable {
     private Double materialValue;
     @Column(name = "valor_cobrado", nullable = false)
     private Double establishedValue;
-    @Column(name = "valor_serviço_terceiro", nullable = false)
+    @Column(name = "valor_serviço_terceiro")
     private Double externalServiceValue;
     @Column(name = "status_do_pedido")
     private OrderStatus orderStatus;

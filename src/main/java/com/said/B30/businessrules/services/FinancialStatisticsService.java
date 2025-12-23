@@ -94,4 +94,50 @@ public class FinancialStatisticsService {
         Double receivable = productRepository.getReceivableAmount(productId);
         return receivable != null ? receivable : 0.0;
     }
+
+    @Transactional(readOnly = true)
+    public Double getProfitByOrderId(Long orderId) {
+        Double profit = orderRepository.getProfitByOrderId(orderId);
+        return profit != null ? profit : 0.0;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getProfitByProductId(Long productId) {
+        Double profit = productRepository.getProfitByProductId(productId);
+        return profit != null ? profit : 0.0;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getTotalOrdersProfit() {
+        Double profit = orderRepository.getTotalProfit();
+        return profit != null ? profit : 0.0;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getTotalProductsProfit() {
+        Double profit = productRepository.getTotalProfit();
+        return profit != null ? profit : 0.0;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getTotalProfit() {
+        Double ordersProfit = orderRepository.getTotalProfit();
+        Double productsProfit = productRepository.getTotalProfit();
+
+        if (ordersProfit == null) ordersProfit = 0.0;
+        if (productsProfit == null) productsProfit = 0.0;
+
+        return ordersProfit + productsProfit;
+    }
+
+    @Transactional(readOnly = true)
+    public Double getTotalProfitByDateRange(LocalDate startDate, LocalDate endDate) {
+        Double ordersProfit = orderRepository.getTotalProfitByDateRange(startDate, endDate);
+        Double productsProfit = productRepository.getTotalProfitByDateRange(startDate, endDate);
+
+        if (ordersProfit == null) ordersProfit = 0.0;
+        if (productsProfit == null) productsProfit = 0.0;
+
+        return ordersProfit + productsProfit;
+    }
 }

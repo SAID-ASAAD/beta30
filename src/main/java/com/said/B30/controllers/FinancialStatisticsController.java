@@ -80,4 +80,36 @@ public class FinancialStatisticsController {
     public ResponseEntity<Double> getReceivableByProductId(@RequestParam Long productId){
         return ResponseEntity.ok(financialStatisticsService.getReceivableByProductId(productId));
     }
+
+    @GetMapping("/lucro_por_pedido")
+    public ResponseEntity<Double> getProfitByOrderId(@RequestParam Long orderId){
+        return ResponseEntity.ok(financialStatisticsService.getProfitByOrderId(orderId));
+    }
+
+    @GetMapping("/lucro_por_produto")
+    public ResponseEntity<Double> getProfitByProductId(@RequestParam Long productId){
+        return ResponseEntity.ok(financialStatisticsService.getProfitByProductId(productId));
+    }
+
+    @GetMapping("/lucro_total_pedidos")
+    public ResponseEntity<Double> getTotalOrdersProfit(){
+        return ResponseEntity.ok(financialStatisticsService.getTotalOrdersProfit());
+    }
+
+    @GetMapping("/lucro_total_produtos")
+    public ResponseEntity<Double> getTotalProductsProfit(){
+        return ResponseEntity.ok(financialStatisticsService.getTotalProductsProfit());
+    }
+
+    @GetMapping("/lucro_total_geral")
+    public ResponseEntity<Double> getTotalProfit(){
+        return ResponseEntity.ok(financialStatisticsService.getTotalProfit());
+    }
+
+    @GetMapping("/lucro_por_data")
+    public ResponseEntity<Double> getTotalProfitByDateRange(
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
+        return ResponseEntity.ok(financialStatisticsService.getTotalProfitByDateRange(startDate, endDate));
+    }
 }

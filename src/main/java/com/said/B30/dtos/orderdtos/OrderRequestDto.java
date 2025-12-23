@@ -19,8 +19,6 @@ public record OrderRequestDto(
                               Double establishedValue,
                               @NotNull(message = "O valor do SINAL pago do pedido deve ser informado. Caso não seja o caso, insira 0(zero)")
                               Double deposit,
-                              @NotNull(message = "O VALOR DE SERVIÇO DE TERCEIROS do pedido deve ser informado. Caso não seja o caso, insira 0(zero)")
-                              Double externalServiceValue,
                               @NotNull(message = "O ID DO CLIENTE do pedido deve ser informada.")
                               Long clientId) {
 
