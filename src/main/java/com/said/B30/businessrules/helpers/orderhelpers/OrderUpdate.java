@@ -28,6 +28,12 @@ public class OrderUpdate {
         if (dto.establishedValue() != null){
             entity.setEstablishedValue(dto.establishedValue());
         }
+        if (dto.materialValue() != null){
+            entity.setMaterialValue(dto.materialValue());
+        }
+        if (dto.externalServiceValue() != null){
+            entity.setExternalServiceValue(dto.externalServiceValue());
+        }
         if (dto.clientId() != null){
             var client = clientRepository.getReferenceById(dto.clientId());
             entity.setClient(client);

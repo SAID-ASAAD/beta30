@@ -25,6 +25,9 @@ public class ProductUpdate {
         if(dto.saleDate() != null){
             entity.setSaleDate(dto.saleDate());
         }
+        if (dto.materialValue() != null){
+            entity.setMaterialValue(dto.materialValue());
+        }
         if(dto.externalServiceValue() != null){
             entity.setExternalServiceValue(dto.externalServiceValue());
         }
