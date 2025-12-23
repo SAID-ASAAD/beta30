@@ -1,5 +1,6 @@
 package com.said.B30.infrastructure.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +26,7 @@ public class Payment implements Serializable {
     Long id;
     @Column(name = "valor", nullable = false)
     Double amount;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "data_do_pagamento", nullable = false)
     LocalDate paymentDate;
 
