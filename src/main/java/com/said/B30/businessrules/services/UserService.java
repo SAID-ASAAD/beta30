@@ -10,6 +10,7 @@ import com.said.B30.businessrules.exceptions.DataEntryException;
 import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +23,12 @@ public class UserService {
 
     public UserResponseDto createUser(UserRequestDto userRequest){
         try{
-            return mapper.toResponse(userRepository.saveAndFlush(mapper.toEntity(userRequest)));
+
+            var user = mapper.toEntity(userRequest);
+            String encryptedPassword = new BCryptPasswordEncoder().encode(userRequest.password());
+            user.setPassword(encryptedPassword);
+
+            return mapper.toResponse(userRepository.saveAndFlush(user));
         }
         catch (DataIntegrityViolationException e){
             throw new DataEntryException("Certifique que o nome de usuário escolhido e o email informado não estão já cadastrados em outro usuário do sistema.");
