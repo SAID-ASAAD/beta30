@@ -27,11 +27,9 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/usuarios/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                // .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) // Comentado para desabilitar o filtro de token
                 .build();
     }
 
