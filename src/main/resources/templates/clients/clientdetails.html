@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detalhes do Cliente</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">β30</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/clients">Clientes</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}">
+        Mensagem de erro.
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Dados do Cliente</h3>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title" th:text="${client.name}">Nome do Cliente</h5>
+            <p class="card-text"><strong>ID:</strong> <span th:text="${client.id}"></span></p>
+            <p class="card-text"><strong>Telefone:</strong> <span th:text="${client.telephoneNumber}"></span></p>
+            <p class="card-text"><strong>Email:</strong> <span th:text="${client.email}"></span></p>
+            <p class="card-text" th:if="${client.note}"><strong>Observações:</strong> <span th:text="${client.note}"></span></p>
+
+            <div class="mt-3">
+                <a th:href="@{/clients/edit/{id}(id=${client.id})}" class="btn btn-warning">Editar Dados</a>
+
+                <form th:action="@{/clients/delete/{id}(id=${client.id})}" method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE"/>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja deletar este cliente?');">Deletar Cliente</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Pedidos</h4>
+                </div>
+                <div class="card-body">
+                    <p>Quantidade de Pedidos: 0</p>
+                    <ul class="list-group">
+                        <li class="list-group-item">Nenhum pedido encontrado.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Produtos</h4>
+                </div>
+                <div class="card-body">
+                    <p>Quantidade de Produtos: 0</p>
+                    <ul class="list-group">
+                        <li class="list-group-item">Nenhum produto encontrado.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/clients" class="btn btn-secondary">Voltar para painel</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

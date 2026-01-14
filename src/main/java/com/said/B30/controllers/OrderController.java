@@ -22,7 +22,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResponseDto> createClient(@Valid @RequestBody OrderRequestDto orderRequest){
+    public ResponseEntity<OrderResponseDto> createOrder(@Valid @RequestBody OrderRequestDto orderRequest){
         var obj = orderService.createOrder(orderRequest);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(obj.id()).toUri();
