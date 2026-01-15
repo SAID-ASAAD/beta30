@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>B30 - Login</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1d20 0%, #2d3436 100%);
+            color: #fff;
+        }
+        .login-card {
+            background-color: #212529;
+            border: 1px solid #373b3e;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center py-4" style="height: 100vh;">
+    <main class="w-100 m-auto" style="max-width: 400px;">
+        <div class="card login-card p-4">
+            <div class="card-body">
+                <form method="POST" th:action="@{/users/login}" autocomplete="off">
+                    <div class="text-center mb-5">
+                        <h1 class="h2 fw-bold text">β30</h1>
+                        <p class="text-secondary">Acesse sua conta</p>
+                    </div>
+
+                    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <small>Usuário ou senha inválidos.</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" name="name" placeholder="Nome de Usuário" required autocomplete="off">
+                        <label for="floatingInput">Nome de Usuário</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Senha" required autocomplete="new-password">
+                        <label for="floatingPassword">Senha</label>
+                    </div>
+
+                    <button class="btn btn-primary w-100 py-2 rounded-3" type="submit">Entrar</button>
+                </form>
+            </div>
+        </div>
+        <div class="text-center mt-3 text-secondary small">
+            &copy; 2026 B30 System
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

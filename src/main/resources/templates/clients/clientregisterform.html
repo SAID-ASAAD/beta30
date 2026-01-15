@@ -20,7 +20,7 @@
                     <a class="nav-link" href="/home">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/clients">Clientes</a>
+                    <a class="nav-link" href="/clients">Clientes</a>
                 </li>
             </ul>
         </div>
@@ -34,7 +34,7 @@
         Mensagem de erro genérica.
     </div>
 
-    <form method="POST" action="/clients/register" th:object="${clientRequestDto}">
+    <form method="POST" th:action="@{/clients/register}" th:object="${clientRequestDto}">
         <div class="mb-3">
             <label for="name" class="form-label">Nome</label>
             <input type="text" class="form-control" id="name" th:field="*{name}"
