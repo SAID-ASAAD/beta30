@@ -38,10 +38,6 @@ public class ClientService {
         }
     }
 
-    public ClientResponseDto findClientByName(String name){
-        return mapper.toResponse(repository.findByName(name));
-    }
-
     public List<ClientResponseDto> findClientsByNameContaining(String name){
         return repository.findByNameContainingIgnoreCase(name)
                 .stream()

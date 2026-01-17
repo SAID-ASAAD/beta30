@@ -3,8 +3,10 @@ package com.said.B30.controllers;
 import com.said.B30.dtos.clientdtos.ClientRequestDto;
 import com.said.B30.dtos.clientdtos.ClientResponseDto;
 import com.said.B30.businessrules.services.ClientService;
+import com.said.B30.businessrules.services.OrderService;
 import com.said.B30.dtos.clientdtos.ClientUpdateRequestDto;
 import com.said.B30.dtos.clientdtos.ClientUpdateResponseDto;
+import com.said.B30.dtos.orderdtos.OrderResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +27,7 @@ import java.util.List;
 public class ClientController {
 
     private final ClientService clientService;
+    private final OrderService orderService;
 
     @GetMapping("/register")
     public ModelAndView getRegisterClientPage(){
@@ -81,8 +84,11 @@ public class ClientController {
     @GetMapping("/details/{id}")
     public ModelAndView getClientDetailsPage(@PathVariable Long id) {
         ClientResponseDto client = clientService.findClientById(id);
+        List<OrderResponseDto> orders = orderService.findOrdersByClientId(id);
+        
         ModelAndView mv = new ModelAndView("clients/clientdetails");
         mv.addObject("client", client);
+        mv.addObject("orders", orders);
         return mv;
     }
 

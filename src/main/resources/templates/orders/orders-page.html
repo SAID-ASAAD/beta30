@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel de Pedidos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">β30</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/orders">Pedidos</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5" style="max-width: 900px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Pedidos</h2>
+        <a href="/orders/register" class="btn btn-success">Novo Pedido</a>
+    </div>
+
+    <div class="mb-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar pedidos por descrição..." onkeyup="searchOrders()">
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Data de Entrega</th>
+                    <th scope="col">Status do Pedido</th>
+                    <th scope="col">Detalhes</th>
+                </tr>
+                </thead>
+                <tbody id="orderTableBody">
+                <tr th:each="order : ${orders.content}"
+                    th:classappend="${order.orderStatus.name() != 'COMPLETED' and order.orderStatus.name() != 'CANCELED' and order.deliveryDate != null and order.deliveryDate.isBefore(T(java.time.LocalDate).now().plusDays(8)) ? 'table-danger' : ''}">
+                    <td th:text="${order.category.description}"></td>
+                    <td th:text="${order.description}"></td>
+                    <td th:text="${#temporals.format(order.deliveryDate, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${order.orderStatus.description}"></td>
+                    <td>
+                        <a th:href="@{/orders/details/{id}(id=${order.id})}" class="btn btn-sm btn-info">Acessar Dados</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="noResultsMessage" class="text-center mt-3" style="display: none;">
+                <p class="text-muted">Nenhum pedido encontrado.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paginação -->
+    <nav aria-label="Page navigation" class="mt-4" th:if="${orders.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${orders.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/orders(page=${orders.number - 1})}">Anterior</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="${'Página ' + (orders.number + 1) + ' de ' + orders.totalPages}"></span>
+            </li>
+            <li class="page-item" th:classappend="${orders.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/orders(page=${orders.number + 1})}">Próximo</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="mt-3">
+        <a href="/home" class="btn btn-secondary">Voltar para Home</a>
+    </div>
+</div>
+
+<script>
+    // Mapas para tradução (já que o DTO retorna o nome do enum)
+    const categoryMap = {
+        'MANUFACTURING': 'fabricação',
+        'MAINTENANCE': 'manutenção'
+    };
+
+    const statusMap = {
+        'IN_PROGRESS': 'em_andamento',
+        'CANCELED': 'cancelado',
+        'COMPLETED': 'concluído'
+    };
+
+    function searchOrders() {
+        const query = document.getElementById('searchInput').value;
+        const noResultsMessage = document.getElementById('noResultsMessage');
+
+        if (query.trim() === "") {
+            window.location.reload();
+            return;
+        }
+
+        fetch(`/orders/search?description=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('orderTableBody');
+                tbody.innerHTML = '';
+
+                const pagination = document.querySelector('.pagination');
+                if(pagination) pagination.parentElement.style.display = 'none';
+
+                if (data.length === 0) {
+                    noResultsMessage.style.display = 'block';
+                } else {
+                    noResultsMessage.style.display = 'none';
+
+                    // Data limite para alerta (hoje + 8 dias)
+                    const today = new Date();
+                    const limitDate = new Date();
+                    limitDate.setDate(today.getDate() + 8);
+                    limitDate.setHours(0, 0, 0, 0); // Zera horas para comparação justa
+
+                    data.forEach(order => {
+                        // Formata a data (yyyy-MM-dd -> dd/MM/yyyy) e cria objeto Date
+                        let formattedDate = order.deliveryDate;
+                        let isLate = false;
+
+                        if (formattedDate) {
+                            const parts = formattedDate.split('-');
+                            if (parts.length === 3) {
+                                const deliveryDateObj = new Date(parts[0], parts[1] - 1, parts[2]); // Mês começa em 0 no JS
+                                formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+                                // Lógica de coloração: não concluído/cancelado E data <= limite
+                                if (order.orderStatus !== 'COMPLETED' && order.orderStatus !== 'CANCELED' && deliveryDateObj <= limitDate) {
+                                    isLate = true;
+                                }
+                            }
+                        }
+
+                        const categoryDesc = categoryMap[order.category] || order.category;
+                        const statusDesc = statusMap[order.orderStatus] || order.orderStatus;
+                        const rowClass = isLate ? 'table-danger' : '';
+
+                        const row = `
+                            <tr class="${rowClass}">
+                                <td>${categoryDesc}</td>
+                                <td>${order.description}</td>
+                                <td>${formattedDate}</td>
+                                <td>${statusDesc}</td>
+                                <td>
+                                    <a href="/orders/details/${order.id}" class="btn btn-sm btn-info">Acessar Dados</a>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Erro na busca:', error);
+            });
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

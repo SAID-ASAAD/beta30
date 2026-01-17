@@ -23,6 +23,11 @@
                     <a class="nav-link active" href="/clients">Clientes</a>
                 </li>
             </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/logout">Sair</a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
@@ -49,7 +54,7 @@
 
                 <form th:action="@{/clients/delete/{id}(id=${client.id})}" method="POST" style="display: inline;">
                     <input type="hidden" name="_method" value="DELETE"/>
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja deletar este cliente?');">Deletar Cliente</button>
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja deletar este cliente? Esta ação não pode ser desfeita.');">Deletar Cliente</button>
                 </form>
             </div>
         </div>
@@ -62,9 +67,20 @@
                     <h4>Pedidos</h4>
                 </div>
                 <div class="card-body">
-                    <p>Quantidade de Pedidos: 0</p>
-                    <ul class="list-group">
-                        <li class="list-group-item">Nenhum pedido encontrado.</li>
+                    <p th:if="${#lists.isEmpty(orders)}">Nenhum pedido encontrado.</p>
+                    <ul class="list-group" th:if="${not #lists.isEmpty(orders)}">
+                        <li class="list-group-item" th:each="order : ${orders}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong th:text="${order.description}"></strong><br>
+                                    <small class="text-muted">Entrega: <span th:text="${#temporals.format(order.deliveryDate, 'dd/MM/yyyy')}"></span></small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-secondary d-block mb-1" th:text="${order.orderStatus.description}"></span>
+                                    <a th:href="@{/orders/details/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary">Ver</a>
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
