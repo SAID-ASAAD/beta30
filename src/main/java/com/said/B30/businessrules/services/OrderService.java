@@ -11,11 +11,14 @@ import com.said.B30.infrastructure.repositories.ClientRepository;
 import com.said.B30.infrastructure.repositories.OrderRepository;
 import com.said.B30.businessrules.helpers.orderhelpers.OrderMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +47,20 @@ public class OrderService {
 
     public OrderResponseDto findOrderById(Long id){
         return mapper.toResponseDto(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
+    }
+
+    public List<OrderResponseDto> findOrdersByClientId(Long clientId){
+        return orderRepository.findByClientId(clientId)
+                .stream().map(mapper::toResponseDto).collect(Collectors.toList());
+    }
+
+    public List<OrderResponseDto> findOrdersByDescription(String description){
+       return orderRepository.findByDescriptionContainingIgnoreCase(description)
+                .stream().map(mapper::toResponseDto).collect(Collectors.toList());
+    }
+
+    public Page<OrderResponseDto> findAllOrdersPaginated(Pageable pageable){
+        return orderRepository.findAllOrdersSortedByUrgency(pageable).map(mapper::toResponseDto);
     }
 
     public List<OrderResponseDto> findAllOrders(){

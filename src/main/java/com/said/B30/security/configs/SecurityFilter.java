@@ -45,7 +45,6 @@ public class SecurityFilter extends OncePerRequestFilter {
                     addAuthCookie(response, newToken, TOKEN_EXPIRATION_SECONDS);
                 }
             } catch (RuntimeException e) {
-                // Token inválido ou expirado: Limpa o contexto e o cookie
                 SecurityContextHolder.clearContext();
                 addAuthCookie(response, null, 0);
             }
