@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum OrderStatus {
 
-    IN_PROGRESS("em_andamento"),
-    CANCELED("cancelado"),
-    COMPLETED("concluído");
+    IN_PROGRESS("EM_ANDAMENTO"),
+    CANCELED("CANCELADO"),
+    COMPLETED("CONCLUÍDO");
 
     private final String description;
 

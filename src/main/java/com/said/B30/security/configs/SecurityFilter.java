@@ -40,7 +40,6 @@ public class SecurityFilter extends OncePerRequestFilter {
                     var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    // Sliding Session: Renova o token se estiver válido
                     String newToken = tokenService.generateToken(user);
                     addAuthCookie(response, newToken, TOKEN_EXPIRATION_SECONDS);
                 }

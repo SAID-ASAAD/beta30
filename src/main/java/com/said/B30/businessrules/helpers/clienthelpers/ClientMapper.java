@@ -2,6 +2,7 @@ package com.said.B30.businessrules.helpers.clienthelpers;
 
 import com.said.B30.dtos.clientdtos.ClientRequestDto;
 import com.said.B30.dtos.clientdtos.ClientResponseDto;
+import com.said.B30.dtos.clientdtos.ClientUpdateRequestDto;
 import com.said.B30.dtos.clientdtos.ClientUpdateResponseDto;
 import com.said.B30.infrastructure.entities.Client;
 import org.mapstruct.Mapper;
@@ -18,4 +19,6 @@ public interface ClientMapper {
     Client toEntity(ClientRequestDto clientRequest);
     ClientResponseDto toResponse(Client clientEntity);
     ClientUpdateResponseDto toUpdateResponseDto(Client clientEntity);
+    
+    ClientUpdateRequestDto toUpdateRequest(ClientResponseDto responseDto);
 }

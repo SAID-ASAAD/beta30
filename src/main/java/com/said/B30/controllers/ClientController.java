@@ -4,9 +4,11 @@ import com.said.B30.dtos.clientdtos.ClientRequestDto;
 import com.said.B30.dtos.clientdtos.ClientResponseDto;
 import com.said.B30.businessrules.services.ClientService;
 import com.said.B30.businessrules.services.OrderService;
+import com.said.B30.businessrules.services.ProductService;
 import com.said.B30.dtos.clientdtos.ClientUpdateRequestDto;
 import com.said.B30.dtos.clientdtos.ClientUpdateResponseDto;
 import com.said.B30.dtos.orderdtos.OrderResponseDto;
+import com.said.B30.dtos.productdtos.ProductFullResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ public class ClientController {
 
     private final ClientService clientService;
     private final OrderService orderService;
+    private final ProductService productService;
 
     @GetMapping("/register")
     public ModelAndView getRegisterClientPage(){
@@ -66,7 +69,8 @@ public class ClientController {
         ClientResponseDto client = clientService.findClientById(id);
         ModelAndView mv = new ModelAndView("clients/clientupdateform");
         mv.addObject("client", client);
-        mv.addObject("clientUpdateRequestDto", new ClientUpdateRequestDto(client.name(), client.telephoneNumber(), client.email(), client.note()));
+        // Usa o método do service para obter o DTO pronto para edição
+        mv.addObject("clientUpdateRequestDto", clientService.getClientForUpdate(id));
         return mv;
     }
 
@@ -85,10 +89,12 @@ public class ClientController {
     public ModelAndView getClientDetailsPage(@PathVariable Long id) {
         ClientResponseDto client = clientService.findClientById(id);
         List<OrderResponseDto> orders = orderService.findOrdersByClientId(id);
+        List<ProductFullResponseDto> products = productService.findProductsByClientId(id);
         
         ModelAndView mv = new ModelAndView("clients/clientdetails");
         mv.addObject("client", client);
         mv.addObject("orders", orders);
+        mv.addObject("products", products);
         return mv;
     }
 

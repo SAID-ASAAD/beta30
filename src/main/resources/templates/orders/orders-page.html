@@ -53,7 +53,7 @@
                 </thead>
                 <tbody id="orderTableBody">
                 <tr th:each="order : ${orders.content}"
-                    th:classappend="${order.orderStatus.name() != 'COMPLETED' and order.orderStatus.name() != 'CANCELED' and order.deliveryDate != null and order.deliveryDate.isBefore(T(java.time.LocalDate).now().plusDays(8)) ? 'table-danger' : ''}">
+                    th:classappend="${order.orderStatus.name() == 'COMPLETED' ? 'table-success' : (order.orderStatus.name() != 'CANCELED' and order.deliveryDate != null and order.deliveryDate.isBefore(T(java.time.LocalDate).now().plusDays(8)) ? 'table-danger' : '')}">
                     <td th:text="${order.category.description}"></td>
                     <td th:text="${order.description}"></td>
                     <td th:text="${#temporals.format(order.deliveryDate, 'dd/MM/yyyy')}"></td>
@@ -70,7 +70,6 @@
         </div>
     </div>
 
-    <!-- Paginação -->
     <nav aria-label="Page navigation" class="mt-4" th:if="${orders.totalPages > 1}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${orders.first} ? 'disabled'">
@@ -93,14 +92,14 @@
 <script>
     // Mapas para tradução (já que o DTO retorna o nome do enum)
     const categoryMap = {
-        'MANUFACTURING': 'fabricação',
-        'MAINTENANCE': 'manutenção'
+        'MANUFACTURING': 'FABRICAÇÃO',
+        'MAINTENANCE': 'MANUTENÇÃO'
     };
 
     const statusMap = {
-        'IN_PROGRESS': 'em_andamento',
-        'CANCELED': 'cancelado',
-        'COMPLETED': 'concluído'
+        'IN_PROGRESS': 'EM_ANDAMENTO',
+        'CANCELED': 'CANCELADO',
+        'COMPLETED': 'CONCLUÍDO'
     };
 
     function searchOrders() {
@@ -126,24 +125,21 @@
                 } else {
                     noResultsMessage.style.display = 'none';
 
-                    // Data limite para alerta (hoje + 8 dias)
                     const today = new Date();
                     const limitDate = new Date();
                     limitDate.setDate(today.getDate() + 8);
-                    limitDate.setHours(0, 0, 0, 0); // Zera horas para comparação justa
+                    limitDate.setHours(0, 0, 0, 0);
 
                     data.forEach(order => {
-                        // Formata a data (yyyy-MM-dd -> dd/MM/yyyy) e cria objeto Date
                         let formattedDate = order.deliveryDate;
                         let isLate = false;
 
                         if (formattedDate) {
                             const parts = formattedDate.split('-');
                             if (parts.length === 3) {
-                                const deliveryDateObj = new Date(parts[0], parts[1] - 1, parts[2]); // Mês começa em 0 no JS
+                                const deliveryDateObj = new Date(parts[0], parts[1] - 1, parts[2]);
                                 formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
 
-                                // Lógica de coloração: não concluído/cancelado E data <= limite
                                 if (order.orderStatus !== 'COMPLETED' && order.orderStatus !== 'CANCELED' && deliveryDateObj <= limitDate) {
                                     isLate = true;
                                 }
@@ -152,7 +148,13 @@
 
                         const categoryDesc = categoryMap[order.category] || order.category;
                         const statusDesc = statusMap[order.orderStatus] || order.orderStatus;
-                        const rowClass = isLate ? 'table-danger' : '';
+
+                        let rowClass = '';
+                        if (order.orderStatus === 'COMPLETED') {
+                            rowClass = 'table-success';
+                        } else if (isLate) {
+                            rowClass = 'table-danger';
+                        }
 
                         const row = `
                             <tr class="${rowClass}">

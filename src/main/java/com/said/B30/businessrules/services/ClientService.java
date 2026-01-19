@@ -1,6 +1,5 @@
 package com.said.B30.businessrules.services;
 
-import com.said.B30.businessrules.exceptions.DeletionNotAllowedException;
 import com.said.B30.businessrules.helpers.clienthelpers.ClientMapper;
 import com.said.B30.businessrules.helpers.clienthelpers.ClientUpdate;
 import com.said.B30.dtos.clientdtos.ClientRequestDto;
@@ -10,8 +9,10 @@ import com.said.B30.dtos.clientdtos.ClientUpdateResponseDto;
 import com.said.B30.infrastructure.entities.Client;
 import com.said.B30.infrastructure.repositories.ClientRepository;
 import com.said.B30.businessrules.exceptions.DataEntryException;
+import com.said.B30.businessrules.exceptions.DeletionNotAllowedException;
 import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.pulsar.PulsarProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,11 @@ public class ClientService {
 
     public ClientResponseDto findClientById(Long id){
         return mapper.toResponse(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
+    }
+
+    public ClientUpdateRequestDto getClientForUpdate(Long id) {
+        Client client = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        return mapper.toUpdateRequest(mapper.toResponse(client));
     }
 
     public List<ClientResponseDto> findAllClients(){

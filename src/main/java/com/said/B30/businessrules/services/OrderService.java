@@ -49,6 +49,11 @@ public class OrderService {
         return mapper.toResponseDto(orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
     }
 
+    public OrderUpdateRequestDto getOrderForUpdate(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        return mapper.toUpdateRequest(mapper.toResponseDto(order));
+    }
+
     public List<OrderResponseDto> findOrdersByClientId(Long clientId){
         return orderRepository.findByClientId(clientId)
                 .stream().map(mapper::toResponseDto).collect(Collectors.toList());
@@ -61,6 +66,10 @@ public class OrderService {
 
     public Page<OrderResponseDto> findAllOrdersPaginated(Pageable pageable){
         return orderRepository.findAllOrdersSortedByUrgency(pageable).map(mapper::toResponseDto);
+    }
+
+    public Page<OrderResponseDto> findOrdersNotCanceled(Pageable pageable){
+        return orderRepository.findOrdersNotCanceled(pageable).map(mapper::toResponseDto);
     }
 
     public List<OrderResponseDto> findAllOrders(){
