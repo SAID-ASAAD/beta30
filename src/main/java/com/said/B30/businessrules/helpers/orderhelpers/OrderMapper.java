@@ -2,6 +2,7 @@ package com.said.B30.businessrules.helpers.orderhelpers;
 
 import com.said.B30.dtos.orderdtos.OrderRequestDto;
 import com.said.B30.dtos.orderdtos.OrderResponseDto;
+import com.said.B30.dtos.orderdtos.OrderUpdateRequestDto;
 import com.said.B30.dtos.orderdtos.OrderUpdateResponseDto;
 import com.said.B30.infrastructure.entities.Order;
 import org.mapstruct.Mapper;
@@ -29,5 +30,7 @@ public interface OrderMapper {
 
     @Mapping(source = "client.id", target = "clientId")
     OrderUpdateResponseDto toUpdateResponseDto(Order orderEntity);
+    
+    OrderUpdateRequestDto toUpdateRequest(OrderResponseDto responseDto);
 
 }

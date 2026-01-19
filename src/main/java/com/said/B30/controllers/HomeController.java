@@ -18,8 +18,8 @@ public class HomeController {
 
     @GetMapping(value = {"/", "/home"})
     public ModelAndView home() {
-        Pageable pageable = PageRequest.of(0, 8);
-        Page<OrderResponseDto> orderPage = orderService.findAllOrdersPaginated(pageable);
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<OrderResponseDto> orderPage = orderService.findOrdersNotCanceled(pageable);
         
         ModelAndView mv = new ModelAndView("home");
         mv.addObject("orders", orderPage);

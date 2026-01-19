@@ -1,11 +1,12 @@
 package com.said.B30.controllers;
 
-import com.said.B30.businessrules.services.ClientService;
-import com.said.B30.dtos.clientdtos.ClientResponseDto;
 import com.said.B30.dtos.orderdtos.OrderRequestDto;
 import com.said.B30.dtos.orderdtos.OrderResponseDto;
 import com.said.B30.dtos.orderdtos.OrderUpdateRequestDto;
 import com.said.B30.businessrules.services.OrderService;
+import com.said.B30.businessrules.services.ClientService;
+import com.said.B30.dtos.clientdtos.ClientResponseDto;
+import com.said.B30.dtos.orderdtos.OrderUpdateResponseDto;
 import com.said.B30.infrastructure.enums.Category;
 import com.said.B30.infrastructure.enums.OrderStatus;
 import jakarta.validation.Valid;
@@ -66,23 +67,11 @@ public class OrderController {
 
     @GetMapping("/edit/{id}")
     public ModelAndView getEditOrderForm(@PathVariable Long id) {
-        OrderResponseDto order = orderService.findOrderById(id);
+        // Usa o método do service para obter o DTO pronto para edição
+        OrderUpdateRequestDto updateDto = orderService.getOrderForUpdate(id);
+        OrderResponseDto order = orderService.findOrderById(id); // Ainda preciso do response para exibir ID e outros dados não editáveis se necessário, ou apenas para consistência
+        
         ModelAndView mv = new ModelAndView("orders/order-update-form");
-        
-        OrderUpdateRequestDto updateDto = new OrderUpdateRequestDto(
-            order.category(),
-            order.description(),
-            order.orderDate(),
-            order.deliveryDate(),
-            order.establishedValue(),
-            order.externalServiceValue(),
-            order.materialValue(),
-            order.invoice(),
-            order.productionProcessNote(),
-            order.orderStatus(),
-            order.clientId()
-        );
-        
         mv.addObject("order", order);
         mv.addObject("orderUpdateRequestDto", updateDto);
         mv.addObject("categories", Category.values());

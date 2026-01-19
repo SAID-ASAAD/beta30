@@ -4,6 +4,7 @@ import com.said.B30.dtos.productdtos.ProductFullResponseDto;
 import com.said.B30.dtos.productdtos.ProductRequestDto;
 import com.said.B30.dtos.productdtos.ProductResponseDto;
 import com.said.B30.dtos.productdtos.ProductSoldResponseDto;
+import com.said.B30.dtos.productdtos.ProductUpdateRequestDto;
 import com.said.B30.infrastructure.entities.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -31,6 +32,7 @@ public interface ProductMapper {
 
     @Mapping(source = "client.id", target = "clientId")
     ProductFullResponseDto toFullResponse(Product productEntity);
-
+    
+    ProductUpdateRequestDto toUpdateRequest(ProductFullResponseDto responseDto);
 
 }

@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ProductStatus {
 
-    AVAILABLE("disponível"),
-    SOLD("vendido");
+    AVAILABLE("DISPONÍVEL"),
+    SOLD("VENDIDO");
 
     private final String description;
 

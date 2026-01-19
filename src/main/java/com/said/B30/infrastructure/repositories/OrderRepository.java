@@ -25,6 +25,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
            "o.deliveryDate ASC")
     Page<Order> findAllOrdersSortedByUrgency(Pageable pageable);
 
+    @Query("SELECT o FROM Order o WHERE o.orderStatus != com.said.B30.infrastructure.enums.OrderStatus.CANCELED ORDER BY " +
+           "CASE WHEN o.orderStatus = com.said.B30.infrastructure.enums.OrderStatus.COMPLETED THEN 1 ELSE 0 END, " +
+           "o.deliveryDate ASC")
+    Page<Order> findOrdersNotCanceled(Pageable pageable);
+
     @Query("SELECT COALESCE(SUM(o.establishedValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o)), 0) " +
             "FROM Order o WHERE o.paymentStatus != 'PAYMENT_OK'")
     Double totalReceivable();

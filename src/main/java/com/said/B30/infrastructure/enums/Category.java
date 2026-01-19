@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum Category {
 
-    MANUFACTURING("fabricação"),
-    MAINTENANCE("manutenção");
+    MANUFACTURING("FABRICAÇÃO"),
+    MAINTENANCE("MANUTENÇÃO");
 
     private final String description;
 

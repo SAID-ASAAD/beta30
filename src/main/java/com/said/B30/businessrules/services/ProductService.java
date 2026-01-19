@@ -13,11 +13,14 @@ import com.said.B30.infrastructure.enums.ProductStatus;
 import com.said.B30.infrastructure.repositories.ClientRepository;
 import com.said.B30.infrastructure.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +61,19 @@ public class ProductService {
         }
     }
 
+    public Page<ProductFullResponseDto> findAllProductsPaginated(Pageable pageable) {
+        return productRepository.findAll(pageable).map(mapper::toFullResponse);
+    }
+
+    public List<ProductFullResponseDto> findProductsByDescription(String description) {
+        return productRepository.findByDescriptionContainingIgnoreCase(description)
+                .stream().map(mapper::toFullResponse).collect(Collectors.toList());
+    }
+    
+    public List<ProductFullResponseDto> findProductsByClientId(Long clientId) {
+        return productRepository.findByClientId(clientId)
+                .stream().map(mapper::toFullResponse).collect(Collectors.toList());
+    }
 
     public List<ProductFullResponseDto> findAllProducts() {
         List<Product> products = productRepository.findAll();
@@ -66,6 +82,11 @@ public class ProductService {
 
     public ProductFullResponseDto findProductById(Long id) {
         return mapper.toFullResponse(productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
+    }
+
+    public ProductUpdateRequestDto getProductForUpdate(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        return mapper.toUpdateRequest(mapper.toFullResponse(product));
     }
 
     public ProductFullResponseDto updateData(Long id, ProductUpdateRequestDto requestDto) {

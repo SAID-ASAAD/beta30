@@ -6,8 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    List<Product> findByClientId(Long clientId);
+
+    List<Product> findByDescriptionContainingIgnoreCase(String description);
 
     @Query("SELECT COALESCE(SUM(prod.establishedValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.product = prod)), 0) " +
             "FROM Product prod WHERE prod.paymentStatus != 'PAYMENT_OK'")
