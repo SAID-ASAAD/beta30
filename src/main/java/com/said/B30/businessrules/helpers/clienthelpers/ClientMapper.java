@@ -13,7 +13,7 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(componentModel = SPRING)
 public interface ClientMapper {
 
-    @Mapping(target = "products", ignore = true)
+    @Mapping(target = "clientSales", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "orders", ignore = true)
     Client toEntity(ClientRequestDto clientRequest);

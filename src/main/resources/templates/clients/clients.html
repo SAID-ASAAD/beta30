@@ -56,7 +56,6 @@
                     <td th:text="${client.telephoneNumber}"></td>
                     <td th:text="${client.email}"></td>
                     <td>
-                        <a th:href="@{/clients/edit/{id}(id=${client.id})}" class="btn btn-sm btn-warning">Alterar</a>
                         <a th:href="@{/clients/details/{id}(id=${client.id})}" class="btn btn-sm btn-info">Acessar Dados</a>
                     </td>
                 </tr>
@@ -68,7 +67,6 @@
         </div>
     </div>
 
-    <!-- Paginação -->
     <nav aria-label="Page navigation" class="mt-4" th:if="${clients.totalPages > 1}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${clients.first} ? 'disabled'">

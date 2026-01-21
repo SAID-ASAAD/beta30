@@ -5,58 +5,58 @@ import com.said.B30.dtos.paymentdtos.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.net.URI;
 import java.util.Set;
 
-@RestController
-@RequestMapping("/pagamentos")
+@Controller
+@RequestMapping("/payments")
 @RequiredArgsConstructor
 public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @PostMapping("/pedidos")
-    public ResponseEntity<PaymentOrderResponseDto> registerPayment(@Valid @RequestBody PaymentOrderRequestDto paymentRequest){
-        var obj = paymentService.registerOrderPayment(paymentRequest);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(obj.id()).toUri();
-        return ResponseEntity.created(uri).body(obj);
+    @PostMapping("/orders")
+    public ModelAndView registerOrderPayment(@Valid PaymentOrderRequestDto paymentRequest){
+        paymentService.registerOrderPayment(paymentRequest);
+        return new ModelAndView("redirect:/orders/details/" + paymentRequest.orderId());
     }
 
-    @PostMapping("/produtos")
-    public ResponseEntity<PaymentProductResponseDto> registerPayment(@Valid @RequestBody PaymentProductRequestDto paymentRequest){
-        var obj = paymentService.registerProductPayment(paymentRequest);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(obj.id()).toUri();
-        return ResponseEntity.created(uri).body(obj);
+    @PostMapping("/sells")
+    public ModelAndView registerSellPayment(@Valid PaymentProductRequestDto paymentRequest){
+        paymentService.registerSellPayment(paymentRequest);
+        return new ModelAndView("redirect:/products"); 
     }
 
-    @GetMapping("/pedidos/{orderId}")
+    @GetMapping("/orders/{orderId}")
+    @ResponseBody
     public ResponseEntity<Set<PaymentOrderResponseDto>> findPaymentsByOrderId(@PathVariable Long orderId){
         return ResponseEntity.ok(paymentService.findPaymentsByOrderId(orderId));
     }
 
-    @GetMapping("/produtos/{orderId}")
-    public ResponseEntity<Set<PaymentProductResponseDto>> findPaymentsByProductId(@PathVariable Long orderId){
-        return ResponseEntity.ok(paymentService.findPaymentsByProductId((orderId)));
+    @GetMapping("/sells/{sellId}")
+    @ResponseBody
+    public ResponseEntity<Set<PaymentProductResponseDto>> findPaymentsBySellId(@PathVariable Long sellId){
+        return ResponseEntity.ok(paymentService.findPaymentsBySellId(sellId));
     }
 
-    @PutMapping("/pedidos/{id}")
+    @PutMapping("/orders/{id}")
+    @ResponseBody
     public ResponseEntity<PaymentOrderResponseDto> updateOrderPaymentData(@PathVariable Long id, @Valid @RequestBody PaymentUpdateRequestDto paymentUpdateRequest){
         return ResponseEntity.ok(paymentService.updateOrderPaymentData(id, paymentUpdateRequest));
     }
 
-    @PutMapping("/produtos/{id}")
-    public ResponseEntity<PaymentProductResponseDto> updateProductPaymentData(@PathVariable Long id, @Valid @RequestBody PaymentUpdateRequestDto paymentUpdateRequest){
-        return ResponseEntity.ok(paymentService.updateProductPaymentData(id, paymentUpdateRequest));
+    @PutMapping("/sells/{id}")
+    @ResponseBody
+    public ResponseEntity<PaymentProductResponseDto> updateSellPaymentData(@PathVariable Long id, @Valid @RequestBody PaymentUpdateRequestDto paymentUpdateRequest){
+        return ResponseEntity.ok(paymentService.updateSellPaymentData(id, paymentUpdateRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePaymentById(@PathVariable Long id){
+    public ModelAndView deletePaymentById(@PathVariable Long id, @RequestParam(required = false) String redirectUrl){
         paymentService.deletePayment(id);
-        return ResponseEntity.accepted().build();
+        return new ModelAndView("redirect:" + (redirectUrl != null ? redirectUrl : "/home"));
     }
 }

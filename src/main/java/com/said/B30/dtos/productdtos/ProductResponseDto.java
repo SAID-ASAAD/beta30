@@ -6,6 +6,7 @@ import com.said.B30.infrastructure.enums.ProductStatus;
 import java.time.LocalDate;
 
 public record ProductResponseDto(Long id,
+                                 Integer quantity,
                                  String description,
                                  String productionProcessNote,
                                  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")

@@ -29,32 +29,45 @@ public class Order implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
+
     @Column(name = "descrição", nullable = false)
     private String description;
+
     @Column(name = "categoria", nullable = false)
     private Category category;
+
     @Column(name = "data_do_pedido")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate orderDate;
+
     @Column(name = "data_de_entrega", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate deliveryDate;
+
     @Column(name = "valor_de_material")
     private Double materialValue;
+
     @Column(name = "valor_cobrado", nullable = false)
     private Double establishedValue;
+
     @Column(name = "valor_serviço_terceiro")
     private Double externalServiceValue;
+
     @Column(name = "status_do_pedido")
     private OrderStatus orderStatus;
+
     @Column(name = "observações_da_produção")
     private String productionProcessNote;
+
     @Column(name = "sinal", nullable = false)
     private Double deposit;
+
     @Column(name = "status_do_pagamento")
     private PaymentStatus paymentStatus;
+
     @Column(name = "nota_fiscal")
     private String invoice;
+
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)

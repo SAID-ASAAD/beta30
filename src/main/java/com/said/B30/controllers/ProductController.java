@@ -1,10 +1,8 @@
 package com.said.B30.controllers;
 
-import com.said.B30.businessrules.services.ClientService;
 import com.said.B30.businessrules.services.ProductService;
-import com.said.B30.dtos.clientdtos.ClientResponseDto;
 import com.said.B30.dtos.productdtos.*;
-import com.said.B30.infrastructure.enums.PaymentStatus;
+import com.said.B30.infrastructure.entities.Sell;
 import com.said.B30.infrastructure.enums.ProductStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,6 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final ClientService clientService;
 
     @GetMapping
     public ModelAndView getProductsPage(@RequestParam(defaultValue = "0") int page){
@@ -47,7 +44,7 @@ public class ProductController {
     @GetMapping("/register")
     public ModelAndView getRegisterProductPage() {
         ModelAndView mv = new ModelAndView("products/product-register-form");
-        mv.addObject("productRequestDto", new ProductRequestDto(null, null, null, null, null));
+        mv.addObject("productRequestDto", new ProductRequestDto(null, null, null, null, null, null));
         return mv;
     }
 
@@ -69,7 +66,6 @@ public class ProductController {
         mv.addObject("product", product);
         mv.addObject("productUpdateRequestDto", updateDto);
         mv.addObject("productStatuses", ProductStatus.values());
-        mv.addObject("paymentStatuses", PaymentStatus.values());
         
         return mv;
     }
@@ -80,7 +76,6 @@ public class ProductController {
             ModelAndView mv = new ModelAndView("products/product-update-form");
             mv.addObject("product", productService.findProductById(id)); 
             mv.addObject("productStatuses", ProductStatus.values());
-            mv.addObject("paymentStatuses", PaymentStatus.values());
             return mv;
         }
         productService.updateData(id, requestDto);
@@ -97,31 +92,33 @@ public class ProductController {
              ProductFullResponseDto product = productService.findProductById(id);
              ModelAndView mv = new ModelAndView("products/product-details");
              mv.addObject("product", product);
-             if (product.clientId() != null) {
-                 ClientResponseDto client = clientService.findClientById(product.clientId());
-                 mv.addObject("client", client);
-             }
              mv.addObject("productSaleDto", saleDto);
              mv.addObject("errorMessage", "Dados inválidos para a venda.");
              return mv;
         }
 
-        productService.sellProduct(id, saleDto.clientId(), saleDto.establishedValue(), saleDto.initialPayment());
+        productService.sellProduct(id, saleDto.clientId(), saleDto.quantity(), saleDto.establishedValue(), saleDto.initialPayment());
         return new ModelAndView("redirect:/products/details/" + id);
     }
 
     @GetMapping("/details/{id}")
     public ModelAndView getProductDetailsPage(@PathVariable Long id) {
         ProductFullResponseDto product = productService.findProductById(id);
+        List<Sell> sales = productService.findSalesByProductId(id);
+        
         ModelAndView mv = new ModelAndView("products/product-details");
         mv.addObject("product", product);
-
-        if (product.clientId() != null) {
-            ClientResponseDto client = clientService.findClientById(product.clientId());
-            mv.addObject("client", client);
-        }
+        mv.addObject("sales", sales);
         
-        mv.addObject("productSaleDto", new ProductSaleDto(null, null, null));
+        Double totalSoldValue = sales.stream().mapToDouble(Sell::getTotalValue).sum();
+        Integer totalSoldQuantity = sales.stream().mapToInt(Sell::getQuantity).sum();
+        mv.addObject("totalSoldValue", totalSoldValue);
+        mv.addObject("totalSoldQuantity", totalSoldQuantity);
+
+        Double stockValue = product.quantity() * product.preEstablishedValue();
+        mv.addObject("stockValue", stockValue);
+        
+        mv.addObject("productSaleDto", new ProductSaleDto(null, null, null, null, null));
 
         return mv;
     }

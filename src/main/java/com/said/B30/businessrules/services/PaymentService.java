@@ -1,17 +1,16 @@
 package com.said.B30.businessrules.services;
 
-import com.said.B30.businessrules.exceptions.PaymentNotAllowedException;
 import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import com.said.B30.businessrules.helpers.paymenthelpers.PaymentMapper;
 import com.said.B30.businessrules.helpers.paymenthelpers.PaymentUpdate;
 import com.said.B30.dtos.paymentdtos.*;
 import com.said.B30.infrastructure.entities.Order;
 import com.said.B30.infrastructure.entities.Payment;
-import com.said.B30.infrastructure.entities.Product;
+import com.said.B30.infrastructure.entities.Sell;
 import com.said.B30.infrastructure.enums.PaymentStatus;
 import com.said.B30.infrastructure.repositories.OrderRepository;
 import com.said.B30.infrastructure.repositories.PaymentRepository;
-import com.said.B30.infrastructure.repositories.ProductRepository;
+import com.said.B30.infrastructure.repositories.SellRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper mapper;
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
+    private final SellRepository sellRepository;
     private final PaymentUpdate paymentUpdate;
 
     @Transactional
@@ -42,18 +41,14 @@ public class PaymentService {
     }
 
     @Transactional
-    public PaymentProductResponseDto registerProductPayment(PaymentProductRequestDto paymentRequest){
-        Product product = productRepository.findById(paymentRequest.productId())
-                .orElseThrow(() -> new ResourceNotFoundException(paymentRequest.productId()));
-
-        if(product.getEstablishedValue() == null){
-            throw new PaymentNotAllowedException("Não é possível lançar pagamento relativo a um produto que ainda não foi vendido");
-        }
+    public PaymentProductResponseDto registerSellPayment(PaymentProductRequestDto paymentRequest){
+        Sell sell = sellRepository.findById(paymentRequest.sellId())
+                .orElseThrow(() -> new ResourceNotFoundException(paymentRequest.sellId()));
 
         Payment payment = mapper.toEntity(paymentRequest);
-        product.addPayment(payment);
-        updateProductPaymentStatus(product);
-        productRepository.saveAndFlush(product);
+        sell.addPayment(payment);
+        updateSellPaymentStatus(sell);
+        sellRepository.saveAndFlush(sell);
         return mapper.toResponsePP(payment);
     }
 
@@ -67,13 +62,13 @@ public class PaymentService {
         }
     }
 
-    private void updateProductPaymentStatus(Product product){
-        double totalPaid = product.getPayments().stream().mapToDouble(Payment::getAmount).sum();
-        if(totalPaid >= product.getEstablishedValue()){
-            product.setPaymentStatus(PaymentStatus.PAYMENT_OK);
+    private void updateSellPaymentStatus(Sell sell){
+        double totalPaid = sell.getPayments().stream().mapToDouble(Payment::getAmount).sum();
+        if(totalPaid >= sell.getTotalValue()){
+            sell.setPaymentStatus(PaymentStatus.PAYMENT_OK);
         }
-        else if(totalPaid < product.getEstablishedValue()){
-            product.setPaymentStatus(PaymentStatus.PENDING_PAYMENT);
+        else if(totalPaid < sell.getTotalValue()){
+            sell.setPaymentStatus(PaymentStatus.PENDING_PAYMENT);
         }
     }
 
@@ -83,9 +78,9 @@ public class PaymentService {
         return payments.stream().map(mapper::toResponsePO).collect(Collectors.toSet());
     }
 
-    public Set<PaymentProductResponseDto> findPaymentsByProductId(Long productId){
-        var product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(productId));
-        Set<Payment> payments = product.getPayments();
+    public Set<PaymentProductResponseDto> findPaymentsBySellId(Long sellId){
+        var sell = sellRepository.findById(sellId).orElseThrow(() -> new ResourceNotFoundException(sellId));
+        Set<Payment> payments = sell.getPayments();
         return payments.stream().map(mapper::toResponsePP).collect(Collectors.toSet());
     }
 
@@ -99,11 +94,11 @@ public class PaymentService {
     }
 
     @Transactional
-    public PaymentProductResponseDto updateProductPaymentData(Long id, PaymentUpdateRequestDto paymentUpdateRequest){
+    public PaymentProductResponseDto updateSellPaymentData(Long id, PaymentUpdateRequestDto paymentUpdateRequest){
         var payment = paymentRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(id));
         paymentUpdate.updatePaymentData(paymentUpdateRequest, payment);
-        updateProductPaymentStatus(payment.getProduct());
+        updateSellPaymentStatus(payment.getSell());
         return mapper.toResponsePP(paymentRepository.saveAndFlush(payment));
     }
 
@@ -117,11 +112,11 @@ public class PaymentService {
             order.getPayments().remove(payment);
             updateOrderPaymentStatus(order);
             orderRepository.saveAndFlush(order);
-        } else{
-            Product product = payment.getProduct();
-            product.getPayments().remove(payment);
-            updateProductPaymentStatus(product);
-            productRepository.saveAndFlush(product);
+        } else if (payment.getSell() != null){
+            Sell sell = payment.getSell();
+            sell.getPayments().remove(payment);
+            updateSellPaymentStatus(sell);
+            sellRepository.saveAndFlush(sell);
         }
     }
 }

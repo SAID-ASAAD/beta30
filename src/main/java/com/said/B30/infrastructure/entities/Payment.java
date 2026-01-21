@@ -24,8 +24,10 @@ public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     @Column(name = "valor", nullable = false)
     Double amount;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "data_do_pagamento", nullable = false)
     LocalDate paymentDate;
@@ -39,5 +41,10 @@ public class Payment implements Serializable {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "sell_id")
+    private Sell sell;
 
 }

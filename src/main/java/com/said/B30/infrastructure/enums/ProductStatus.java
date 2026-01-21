@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum ProductStatus {
 
     AVAILABLE("DISPONÍVEL"),
-    SOLD("VENDIDO");
+    SOLD_OUT("ESGOTADO");
 
     private final String description;
 

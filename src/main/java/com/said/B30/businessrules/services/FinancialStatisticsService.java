@@ -5,7 +5,7 @@ import com.said.B30.dtos.paymentdtos.PaymentResponseDto;
 import com.said.B30.infrastructure.entities.Payment;
 import com.said.B30.infrastructure.repositories.OrderRepository;
 import com.said.B30.infrastructure.repositories.PaymentRepository;
-import com.said.B30.infrastructure.repositories.ProductRepository;
+import com.said.B30.infrastructure.repositories.SellRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ public class FinancialStatisticsService {
 
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
+    private final SellRepository sellRepository;
     private final PaymentMapper mapper;
 
     @Transactional(readOnly = true)
@@ -58,29 +58,34 @@ public class FinancialStatisticsService {
     @Transactional(readOnly = true)
     public Double getTotalReceivable() {
         Double ordersReceivable = orderRepository.totalReceivable();
-        Double productsReceivable = productRepository.totalReceivable();
+        Double sellsReceivable = sellRepository.totalReceivable();
         
         if (ordersReceivable == null) ordersReceivable = 0.0;
-        if (productsReceivable == null) productsReceivable = 0.0;
+        if (sellsReceivable == null) sellsReceivable = 0.0;
 
-        return ordersReceivable + productsReceivable;
+        return ordersReceivable + sellsReceivable;
     }
 
     @Transactional(readOnly = true)
     public Double getReceivableByDateRange(LocalDate startDate, LocalDate endDate) {
-        Double receivable = orderRepository.totalReceivableByDateRange(startDate, endDate);
-        return receivable != null ? receivable : 0.0;
+        Double ordersReceivable = orderRepository.totalReceivableByDateRange(startDate, endDate);
+        Double sellsReceivable = sellRepository.totalReceivableByDateRange(startDate, endDate);
+
+        if (ordersReceivable == null) ordersReceivable = 0.0;
+        if (sellsReceivable == null) sellsReceivable = 0.0;
+        
+        return ordersReceivable + sellsReceivable;
     }
 
     @Transactional(readOnly = true)
     public Double getReceivableByClientId(Long clientId) {
         Double ordersReceivable = orderRepository.totalReceivableByClientId(clientId);
-        Double productsReceivable = productRepository.totalReceivableByClientId(clientId);
+        Double sellsReceivable = sellRepository.totalReceivableByClientId(clientId);
 
         if (ordersReceivable == null) ordersReceivable = 0.0;
-        if (productsReceivable == null) productsReceivable = 0.0;
+        if (sellsReceivable == null) sellsReceivable = 0.0;
 
-        return ordersReceivable + productsReceivable;
+        return ordersReceivable + sellsReceivable;
     }
 
     @Transactional(readOnly = true)
@@ -90,8 +95,8 @@ public class FinancialStatisticsService {
     }
 
     @Transactional(readOnly = true)
-    public Double getReceivableByProductId(Long productId) {
-        Double receivable = productRepository.getReceivableAmount(productId);
+    public Double getReceivableBySellId(Long sellId) {
+        Double receivable = sellRepository.getReceivableAmountBySellId(sellId);
         return receivable != null ? receivable : 0.0;
     }
 
@@ -103,7 +108,7 @@ public class FinancialStatisticsService {
 
     @Transactional(readOnly = true)
     public Double getProfitByProductId(Long productId) {
-        Double profit = productRepository.getProfitByProductId(productId);
+        Double profit = sellRepository.getProfitByProductId(productId);
         return profit != null ? profit : 0.0;
     }
 
@@ -115,14 +120,14 @@ public class FinancialStatisticsService {
 
     @Transactional(readOnly = true)
     public Double getTotalProductsProfit() {
-        Double profit = productRepository.getTotalProfit();
+        Double profit = sellRepository.getTotalProfit();
         return profit != null ? profit : 0.0;
     }
 
     @Transactional(readOnly = true)
     public Double getTotalProfit() {
         Double ordersProfit = orderRepository.getTotalProfit();
-        Double productsProfit = productRepository.getTotalProfit();
+        Double productsProfit = sellRepository.getTotalProfit();
 
         if (ordersProfit == null) ordersProfit = 0.0;
         if (productsProfit == null) productsProfit = 0.0;
@@ -133,7 +138,7 @@ public class FinancialStatisticsService {
     @Transactional(readOnly = true)
     public Double getTotalProfitByDateRange(LocalDate startDate, LocalDate endDate) {
         Double ordersProfit = orderRepository.getTotalProfitByDateRange(startDate, endDate);
-        Double productsProfit = productRepository.getTotalProfitByDateRange(startDate, endDate);
+        Double productsProfit = sellRepository.getTotalProfitByDateRange(startDate, endDate);
 
         if (ordersProfit == null) ordersProfit = 0.0;
         if (productsProfit == null) productsProfit = 0.0;

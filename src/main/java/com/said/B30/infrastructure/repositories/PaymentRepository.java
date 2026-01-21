@@ -20,14 +20,14 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     @Query("SELECT p FROM Payment p " +
             "LEFT JOIN p.order o " +
-            "LEFT JOIN p.product prod " +
-            "WHERE o.client.id = :clientId OR prod.client.id = :clientId")
+            "LEFT JOIN p.sell s " +
+            "WHERE o.client.id = :clientId OR s.client.id = :clientId")
     List<Payment> findPaymentsByClientId(@Param("clientId") Long clientId);
 
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p " +
             "LEFT JOIN p.order o " +
-            "LEFT JOIN p.product prod " +
-            "WHERE o.client.id = :clientId OR prod.client.id = :clientId")
+            "LEFT JOIN p.sell s " +
+            "WHERE o.client.id = :clientId OR s.client.id = :clientId")
     Double totalRevenueByClientId(@Param("clientId") Long clientId);
 
 }

@@ -7,15 +7,12 @@ import java.time.LocalDate;
 
 public record ProductUpdateRequestDto(
                                       String description,
+                                      Integer quantity,
                                       String productionProcessNote,
                                       @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
                                       LocalDate productionDate,
-                                      @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-                                      LocalDate saleDate,
                                       Double materialValue,
                                       Double externalServiceValue,
-                                      Double establishedValue,
-                                      ProductStatus productStatus,
-                                      String invoice,
-                                      Long clientId) {
+                                      Double preEstablishedValue,
+                                      ProductStatus productStatus) {
 }

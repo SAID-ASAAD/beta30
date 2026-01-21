@@ -49,21 +49,35 @@
         </div>
 
         <div class="mb-3">
-            <label for="materialValue" class="form-label">Valor Material</label>
+            <label for="quantity" class="form-label">Quantidade</label>
+            <input type="number" class="form-control" id="quantity" th:field="*{quantity}"
+                   th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid' : ''" required min="0">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}">Erro na quantidade</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="productionProcessNote" class="form-label">Observações da Produção</label>
+            <textarea class="form-control" id="productionProcessNote" th:field="*{productionProcessNote}" rows="3"
+                      th:classappend="${#fields.hasErrors('productionProcessNote')} ? 'is-invalid' : ''"></textarea>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('productionProcessNote')}" th:errors="*{productionProcessNote}">Erro nas observações</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="materialValue" class="form-label">Valor Material (total gasto no lote)</label>
             <input type="number" step="0.01" class="form-control" id="materialValue" th:field="*{materialValue}"
                    th:classappend="${#fields.hasErrors('materialValue')} ? 'is-invalid' : ''" required>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('materialValue')}" th:errors="*{materialValue}">Erro no Valor Material</div>
         </div>
 
         <div class="mb-3">
-            <label for="externalServiceValue" class="form-label">Valor Serviço Externo</label>
+            <label for="externalServiceValue" class="form-label">Valor Serviço Externo (total gasto no lote)</label>
             <input type="number" step="0.01" class="form-control" id="externalServiceValue" th:field="*{externalServiceValue}"
                    th:classappend="${#fields.hasErrors('externalServiceValue')} ? 'is-invalid' : ''" required>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('externalServiceValue')}" th:errors="*{externalServiceValue}">Erro no Valor Serviço Externo</div>
         </div>
 
         <div class="mb-3">
-            <label for="preEstablishedValue" class="form-label">Valor Sugerido</label>
+            <label for="preEstablishedValue" class="form-label">Valor Sugerido (valor unit.)</label>
             <input type="number" step="0.01" class="form-control" id="preEstablishedValue" th:field="*{preEstablishedValue}"
                    th:classappend="${#fields.hasErrors('preEstablishedValue')} ? 'is-invalid' : ''" required>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('preEstablishedValue')}" th:errors="*{preEstablishedValue}">Erro no Valor Sugerido</div>

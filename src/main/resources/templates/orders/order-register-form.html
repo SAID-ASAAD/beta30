@@ -37,10 +37,11 @@
     <form method="POST" th:action="@{/orders/register}" th:object="${orderRequestDto}">
 
         <div class="mb-3">
-            <label for="clientId" class="form-label">ID do Cliente</label>
-            <input type="number" class="form-control" id="clientId" th:field="*{clientId}"
-                   th:classappend="${#fields.hasErrors('clientId')} ? 'is-invalid' : ''" required>
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('clientId')}" th:errors="*{clientId}">Erro no ID do Cliente</div>
+            <label for="clientNameSearch" class="form-label">Cliente</label>
+            <input type="text" class="form-control" id="clientNameSearch" onkeyup="searchClients()" placeholder="Digite o nome do cliente...">
+            <input type="hidden" id="clientId" th:field="*{clientId}">
+            <div id="clientSearchResults" class="list-group mt-1"></div>
+            <div id="clientSearchError" class="text-danger small mt-1" style="display: none;">Cliente não encontrado.</div>
         </div>
 
         <div class="mb-3">
@@ -79,7 +80,7 @@
         <div class="mb-3">
             <label for="deposit" class="form-label">Sinal Pago</label>
             <input type="number" step="0.01" class="form-control" id="deposit" th:field="*{deposit}"
-                   th:classappend="${#fields.hasErrors('deposit')} ? 'is-invalid' : ''" required>
+                   th:classappend="${#fields.hasErrors('deposit')}" th:errors="*{deposit}" required>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('deposit')}" th:errors="*{deposit}">Erro no Sinal</div>
         </div>
 
@@ -87,6 +88,49 @@
         <a href="/orders" class="btn btn-danger">Voltar</a>
     </form>
 </div>
+
+<script>
+    function searchClients() {
+        const query = document.getElementById('clientNameSearch').value;
+        const resultsDiv = document.getElementById('clientSearchResults');
+        const errorDiv = document.getElementById('clientSearchError');
+        const clientIdInput = document.getElementById('clientId');
+
+        if (query.length < 2) {
+            resultsDiv.innerHTML = '';
+            errorDiv.style.display = 'none';
+            return;
+        }
+
+        fetch(`/clients/search?name=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                resultsDiv.innerHTML = '';
+                if (data.length === 0) {
+                    errorDiv.style.display = 'block';
+                } else {
+                    errorDiv.style.display = 'none';
+                    data.forEach(client => {
+                        const item = document.createElement('a');
+                        item.href = '#';
+                        item.classList.add('list-group-item', 'list-group-item-action');
+                        item.textContent = client.name;
+                        item.onclick = (e) => {
+                            e.preventDefault();
+                            document.getElementById('clientNameSearch').value = client.name;
+                            clientIdInput.value = client.id;
+                            resultsDiv.innerHTML = '';
+                        };
+                        resultsDiv.appendChild(item);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Erro na busca de clientes:', error);
+                errorDiv.style.display = 'block';
+            });
+    }
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>

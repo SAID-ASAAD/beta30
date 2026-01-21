@@ -12,7 +12,6 @@ import com.said.B30.businessrules.exceptions.DataEntryException;
 import com.said.B30.businessrules.exceptions.DeletionNotAllowedException;
 import com.said.B30.businessrules.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.pulsar.PulsarProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -86,8 +85,8 @@ public class ClientService {
 
     public void deleteClientById(Long id){
         var client = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
-        if(!client.getOrders().isEmpty() || !client.getProducts().isEmpty()){
-            throw new DeletionNotAllowedException("Não é possível deletar um cliente com pedidos ou produtos registrados em seu nome");
+        if(!client.getOrders().isEmpty() || !client.getClientSales().isEmpty()){
+            throw new DeletionNotAllowedException("Não é possível deletar um cliente com pedidos ou vendas registrados em seu nome");
         } else {
             repository.deleteById(id);
         }

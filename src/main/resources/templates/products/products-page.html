@@ -49,6 +49,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
+                    <th scope="col">ID</th>
                     <th scope="col">Descrição</th>
                     <th scope="col">Status</th>
                     <th scope="col">Valor Sugerido</th>
@@ -57,6 +58,7 @@
                 </thead>
                 <tbody id="productTableBody">
                 <tr th:each="product : ${products.content}">
+                    <td th:text="${#numbers.formatInteger(product.id, 4)}"></td>
                     <td th:text="${product.description}"></td>
                     <td th:text="${product.productStatus.description}"></td>
                     <td th:text="${'R$ ' + product.preEstablishedValue}"></td>
@@ -121,9 +123,11 @@
                     noResultsMessage.style.display = 'none';
                     data.forEach(product => {
                         const statusDesc = statusMap[product.productStatus] || product.productStatus;
+                        const idFormatted = String(product.id).padStart(4, '0');
 
                         const row = `
                             <tr>
+                                <td>${idFormatted}</td>
                                 <td>${product.description}</td>
                                 <td>${statusDesc}</td>
                                 <td>R$ ${product.preEstablishedValue}</td>

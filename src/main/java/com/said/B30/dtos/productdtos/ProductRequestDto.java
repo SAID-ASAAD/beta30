@@ -1,10 +1,13 @@
 package com.said.B30.dtos.productdtos;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record ProductRequestDto(@NotBlank(message = "A DESCRIÇÃO do produto deve ser informada.")
                                 String description,
+                                @Min(0)
+                                Integer quantity,
                                 String productionProcessNote,
                                 @NotNull(message = "O VALOR gasto em MATERIAL no produto deve ser informado.")
                                 Double materialValue,

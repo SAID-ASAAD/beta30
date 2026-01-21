@@ -12,21 +12,23 @@ public interface PaymentMapper {
 
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "order", ignore = true)
+    @Mapping(target = "sell", ignore = true)
     @Mapping(target = "id", ignore = true)
     Payment toEntity(PaymentOrderRequestDto paymentRequest);
 
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "order", ignore = true)
+    @Mapping(target = "sell", ignore = true)
     @Mapping(target = "id", ignore = true)
     Payment toEntity(PaymentProductRequestDto paymentRequest);
 
     @Mapping(target = "orderId", source = "order.id")
     PaymentOrderResponseDto toResponsePO(Payment paymentEntity);
 
-    @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "sellId", source = "sell.id")
     PaymentProductResponseDto toResponsePP(Payment paymentEntity);
 
-    @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "sellId", source = "sell.id")
     @Mapping(target = "orderId", source = "order.id")
     PaymentResponseDto toResponse(Payment paymentEntity);
 }

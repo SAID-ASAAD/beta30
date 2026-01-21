@@ -25,11 +25,15 @@ public class Client implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
+
     @Column(name = "nome", nullable = false)
     private String name;
+
     @Column(name = "telefone", nullable = false, unique = true)
     private String telephoneNumber;
+
     private String email;
+
     @Column(name = "observações")
     private String note;
 
@@ -41,5 +45,5 @@ public class Client implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "client")
     @Builder.Default
-    private Set<Product> products = new HashSet<>();
+    private Set<Sell> clientSales = new HashSet<>();
 }
