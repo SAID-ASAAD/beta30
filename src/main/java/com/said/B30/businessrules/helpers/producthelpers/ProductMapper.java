@@ -6,6 +6,7 @@ import com.said.B30.dtos.productdtos.ProductResponseDto;
 import com.said.B30.dtos.productdtos.ProductSoldResponseDto;
 import com.said.B30.dtos.productdtos.ProductUpdateRequestDto;
 import com.said.B30.infrastructure.entities.Product;
+import com.said.B30.infrastructure.entities.Sell;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,23 +15,22 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(componentModel = SPRING)
 public interface ProductMapper {
 
-    @Mapping(target = "payments", ignore = true)
-    @Mapping(target = "paymentStatus", ignore = true)
-    @Mapping(target = "establishedValue", ignore = true)
+    @Mapping(target = "sales", ignore = true)
+    @Mapping(target = "totalValue", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "invoice", ignore = true)
     @Mapping(target = "productionDate", ignore = true)
     @Mapping(target = "productStatus", ignore = true)
-    @Mapping(target = "saleDate", ignore = true)
-    @Mapping(target = "client", ignore = true)
     Product toEntity(ProductRequestDto productRequest);
 
     ProductResponseDto toResponse(Product productEntity);
 
+    @Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "product.description", target = "description")
+    @Mapping(source = "product.productStatus", target = "productStatus")
     @Mapping(source = "client.id", target = "clientId")
-    ProductSoldResponseDto toSoldResponse(Product productEntity);
+    @Mapping(source = "quantity", target = "quantitySold")
+    ProductSoldResponseDto toSoldResponse(Sell sellEntity);
 
-    @Mapping(source = "client.id", target = "clientId")
     ProductFullResponseDto toFullResponse(Product productEntity);
     
     ProductUpdateRequestDto toUpdateRequest(ProductFullResponseDto responseDto);

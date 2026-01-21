@@ -24,13 +24,17 @@ public class Expense implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Setter(AccessLevel.NONE)
     private Long id;
+
     @Column(name = "descrição", nullable = false)
     private String description;
+
     @Column(name = "valor", nullable = false)
     private Double amount;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "data_do_pagamento", nullable = false)
     private LocalDate paymentDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "mês_de_referência", nullable = false)
     private LocalDate referenceMonth;

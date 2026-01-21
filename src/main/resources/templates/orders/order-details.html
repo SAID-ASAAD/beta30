@@ -35,7 +35,7 @@
 
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">Detalhes do Pedido #<span th:text="${order.id}"></span></h3>
+            <h3 class="mb-0">Detalhes da O.S. #<span th:text="${#numbers.formatInteger(order.id, 4)}"></span></h3>
             <span class="badge bg-primary" th:text="${order.orderStatus.description}">Status</span>
         </div>
         <div class="card-body">
@@ -50,7 +50,7 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-2">
-                            <label class="fw-bold">Categoria:</label>
+                            <label class="fw-bold">Serviço:</label>
                             <p th:text="${order.category.description}"></p>
                         </div>
                         <div class="col-md-6 mb-2">
@@ -125,7 +125,7 @@
     </div>
 
     <div class="mt-3">
-        <a href="/orders" class="btn btn-secondary">Voltar para Painel</a>
+        <a href="/orders" class="btn btn-secondary">Voltar para Lista</a>
     </div>
 </div>
 

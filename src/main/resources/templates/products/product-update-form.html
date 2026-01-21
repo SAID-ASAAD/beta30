@@ -42,24 +42,21 @@
     <form method="POST" th:action="@{/products/edit/{id}(id=${product.id})}" th:object="${productUpdateRequestDto}">
         <input type="hidden" name="_method" value="PUT"/>
 
-        <div class="mb-3">
-            <label for="clientId" class="form-label">ID do Cliente</label>
-            <input type="number" class="form-control" id="clientId" th:field="*{clientId}" required>
-        </div>
 
         <div class="mb-3">
             <label for="description" class="form-label">Descrição</label>
             <input type="text" class="form-control" id="description" th:field="*{description}" required>
         </div>
 
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Quantidade em Estoque</label>
+            <input type="number" class="form-control" id="quantity" th:field="*{quantity}" required>
+        </div>
+
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="productionDate" class="form-label">Data de Produção</label>
                 <input type="date" class="form-control" id="productionDate" th:field="*{productionDate}">
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="saleDate" class="form-label">Data de Venda</label>
-                <input type="date" class="form-control" id="saleDate" th:field="*{saleDate}">
             </div>
         </div>
 
@@ -73,15 +70,11 @@
                 <input type="number" step="0.01" class="form-control" id="externalServiceValue" th:field="*{externalServiceValue}">
             </div>
             <div class="col-md-4 mb-3">
-                <label for="establishedValue" class="form-label">Valor Cobrado</label>
-                <input type="number" step="0.01" class="form-control" id="establishedValue" th:field="*{establishedValue}">
+                <label for="preEstablishedValue" class="form-label">Valor Sugerido</label>
+                <input type="number" step="0.01" class="form-control" id="preEstablishedValue" th:field="*{preEstablishedValue}">
             </div>
         </div>
 
-        <div class="mb-3">
-            <label for="invoice" class="form-label">Nota Fiscal</label>
-            <input type="text" class="form-control" id="invoice" th:field="*{invoice}">
-        </div>
 
         <div class="mb-3">
             <label for="productionProcessNote" class="form-label">Observação de Produção</label>
@@ -93,9 +86,10 @@
             <select class="form-select" id="productStatus" th:field="*{productStatus}">
                 <option th:each="status : ${productStatuses}"
                         th:value="${status}"
-                        th:text="${status}"></option>
+                        th:text="${status.description}"></option>
             </select>
         </div>
+
 
         <button type="submit" class="btn btn-primary">Salvar Alterações</button>
         <a th:href="@{/products/details/{id}(id=${product.id})}" class="btn btn-danger">Cancelar</a>

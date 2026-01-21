@@ -72,7 +72,7 @@
                         <li class="list-group-item" th:each="order : ${orders}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <strong th:text="${order.description}"></strong><br>
+                                    <strong th:text="'#' + ${#numbers.formatInteger(order.id, 4)} + ' - ' + ${order.description}"></strong><br>
                                     <small class="text-muted">Entrega: <span th:text="${#temporals.format(order.deliveryDate, 'dd/MM/yyyy')}"></span></small>
                                 </div>
                                 <div class="text-end">
@@ -88,20 +88,21 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h4>Produtos</h4>
+                    <h4>Produtos Comprados</h4>
                 </div>
                 <div class="card-body">
-                    <p th:if="${#lists.isEmpty(products)}">Nenhum produto encontrado.</p>
-                    <ul class="list-group" th:if="${not #lists.isEmpty(products)}">
-                        <li class="list-group-item" th:each="product : ${products}">
+                    <p th:if="${#lists.isEmpty(sales)}">Nenhuma compra encontrada.</p>
+                    <ul class="list-group" th:if="${not #lists.isEmpty(sales)}">
+                        <li class="list-group-item" th:each="sell : ${sales}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <strong th:text="${product.description}"></strong><br>
-                                    <small class="text-muted">Venda: <span th:text="${product.saleDate != null ? #temporals.format(product.saleDate, 'dd/MM/yyyy') : '-'}"></span></small>
+                                    <strong th:text="'#' + ${#numbers.formatInteger(sell.product.id, 4)} + ' - ' + ${sell.product.description}"></strong><br>
+                                    <small class="text-muted">Data: <span th:text="${#temporals.format(sell.saleDate, 'dd/MM/yyyy')}"></span></small><br>
+                                    <small class="text-muted">Qtd: <span th:text="${sell.quantity}"></span> | Total: <span th:text="${'R$ ' + sell.totalValue}"></span></small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-secondary d-block mb-1" th:text="${product.productStatus.description}"></span>
-                                    <a th:href="@{/products/details/{id}(id=${product.id})}" class="btn btn-sm btn-outline-primary">Ver</a>
+                                    <span class="badge bg-secondary d-block mb-1" th:text="${sell.paymentStatus.description}"></span>
+                                    <a th:href="@{/products/details/{id}(id=${sell.product.id})}" class="btn btn-sm btn-outline-primary">Ver Produto</a>
                                 </div>
                             </div>
                         </li>

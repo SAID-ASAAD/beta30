@@ -5,14 +5,13 @@ import com.said.B30.infrastructure.enums.ProductStatus;
 
 import java.time.LocalDate;
 
-public record ProductSoldResponseDto(Long id,
+public record ProductSoldResponseDto(Long productId,
                                      String description,
                                      @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-                                     LocalDate productionDate,
-                                     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
                                      LocalDate saleDate,
-                                     Double establishedValue,
+                                     Double unitValue,
+                                     Double totalValue,
+                                     Integer quantitySold,
                                      ProductStatus productStatus,
-                                     String invoice,
                                      Long clientId) {
 }

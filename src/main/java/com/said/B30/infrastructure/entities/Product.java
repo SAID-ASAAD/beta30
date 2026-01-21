@@ -1,6 +1,5 @@
 package com.said.B30.infrastructure.entities;
 
-import com.said.B30.infrastructure.enums.PaymentStatus;
 import com.said.B30.infrastructure.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,45 +26,49 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Setter(AccessLevel.NONE)
     private Long id;
+
     @Column(name = "descrição", nullable = false)
     private String description;
+
+    @Column(name = "quantidade")
+    private Integer quantity;
+
     @Column(name = "observações_da_produção")
     private String productionProcessNote;
+
     @Column(name = "data_de_produção")
     private LocalDate productionDate;
-    @Column(name = "data_de_venda")
-    private LocalDate saleDate;
+
     @Column(name = "valor_de_material", nullable = false)
     private Double materialValue;
+
     @Column(name = "valor_serviço_terceiro", nullable = false)
     private Double externalServiceValue;
+
     @Column(name = "valor_sugerido", nullable = false)
     private Double preEstablishedValue;
-    @Column(name = "valor_cobrado")
-    private Double establishedValue;
+
     @Column(name = "status_do_produto", nullable = false)
     private ProductStatus productStatus;
-    @Column(name = "status_do_pagamento")
-    private PaymentStatus paymentStatus;
-    @Column(name = "nota_fiscal")
-    private String invoice;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @Column(name = "valor_total")
+    private Double totalValue;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private Set<Payment> payments = new HashSet<>();
+    private Set<Sell> sales = new HashSet<>();
 
-    public void addPayment(Payment payment) {
-        payments.add(payment);
-        payment.setProduct(this);
+    public void addSell(Sell sell) {
+        sales.add(sell);
+        sell.setProduct(this);
     }
 
     @PrePersist
     private void prePersist(){
         this.productionDate = LocalDate.now();
         this.productStatus = ProductStatus.AVAILABLE;
+        if (this.quantity != null && this.preEstablishedValue != null) {
+            this.totalValue = this.quantity * this.preEstablishedValue;
+        }
     }
 }

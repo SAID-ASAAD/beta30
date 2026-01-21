@@ -76,9 +76,9 @@ public class FinancialStatisticsController {
         return ResponseEntity.ok(financialStatisticsService.getReceivableByOrderId(orderId));
     }
 
-    @GetMapping("/a_receber_por_produto")
-    public ResponseEntity<Double> getReceivableByProductId(@RequestParam Long productId){
-        return ResponseEntity.ok(financialStatisticsService.getReceivableByProductId(productId));
+    @GetMapping("/a_receber_por_venda")
+    public ResponseEntity<Double> getReceivableBySellId(@RequestParam Long sellId){
+        return ResponseEntity.ok(financialStatisticsService.getReceivableBySellId(sellId));
     }
 
     @GetMapping("/lucro_por_pedido")

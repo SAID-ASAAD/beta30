@@ -44,7 +44,8 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Categoria</th>
+                    <th scope="col">O.S.</th>
+                    <th scope="col">Serviço</th>
                     <th scope="col">Descrição</th>
                     <th scope="col">Data de Entrega</th>
                     <th scope="col">Status do Pedido</th>
@@ -54,6 +55,7 @@
                 <tbody id="orderTableBody">
                 <tr th:each="order : ${orders.content}"
                     th:classappend="${order.orderStatus.name() == 'COMPLETED' ? 'table-success' : (order.orderStatus.name() != 'CANCELED' and order.deliveryDate != null and order.deliveryDate.isBefore(T(java.time.LocalDate).now().plusDays(8)) ? 'table-danger' : '')}">
+                    <td th:text="${#numbers.formatInteger(order.id, 4)}"></td>
                     <td th:text="${order.category.description}"></td>
                     <td th:text="${order.description}"></td>
                     <td th:text="${#temporals.format(order.deliveryDate, 'dd/MM/yyyy')}"></td>
@@ -90,7 +92,6 @@
 </div>
 
 <script>
-    // Mapas para tradução (já que o DTO retorna o nome do enum)
     const categoryMap = {
         'MANUFACTURING': 'FABRICAÇÃO',
         'MAINTENANCE': 'MANUTENÇÃO'
@@ -156,8 +157,11 @@
                             rowClass = 'table-danger';
                         }
 
+                        const osNumber = String(order.id).padStart(4, '0');
+
                         const row = `
                             <tr class="${rowClass}">
+                                <td>${osNumber}</td>
                                 <td>${categoryDesc}</td>
                                 <td>${order.description}</td>
                                 <td>${formattedDate}</td>
