@@ -14,10 +14,10 @@ public class ClientUpdate {
         if (dto.telephoneNumber() != null && !dto.telephoneNumber().isBlank()){
             entity.setTelephoneNumber(dto.telephoneNumber());
         }
-        if (dto.email() != null && !dto.email().isBlank()){
+        if (dto.email() != null){
             entity.setEmail(dto.email());
         }
-        if (dto.note() != null && !dto.note().isBlank()){
+        if (dto.note() != null){
             entity.setNote(dto.note());
         }
     }

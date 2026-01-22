@@ -30,5 +30,6 @@ public interface PaymentMapper {
 
     @Mapping(target = "sellId", source = "sell.id")
     @Mapping(target = "orderId", source = "order.id")
+    @Mapping(target = "productId", source = "sell.product.id")
     PaymentResponseDto toResponse(Payment paymentEntity);
 }
