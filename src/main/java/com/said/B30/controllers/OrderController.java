@@ -1,12 +1,12 @@
 package com.said.B30.controllers;
 
+import com.said.B30.businessrules.helpers.orderhelpers.OrderMapper;
 import com.said.B30.dtos.orderdtos.OrderRequestDto;
 import com.said.B30.dtos.orderdtos.OrderResponseDto;
 import com.said.B30.dtos.orderdtos.OrderUpdateRequestDto;
 import com.said.B30.businessrules.services.OrderService;
 import com.said.B30.businessrules.services.ClientService;
 import com.said.B30.dtos.clientdtos.ClientResponseDto;
-import com.said.B30.dtos.orderdtos.OrderUpdateResponseDto;
 import com.said.B30.infrastructure.enums.Category;
 import com.said.B30.infrastructure.enums.OrderStatus;
 import jakarta.validation.Valid;
@@ -29,6 +29,7 @@ public class OrderController {
 
     private final OrderService orderService;
     private final ClientService clientService;
+    private final OrderMapper orderMapper;
 
     @GetMapping
     public ModelAndView getOrdersPage(@RequestParam(defaultValue = "0") int page){
@@ -49,7 +50,7 @@ public class OrderController {
     @GetMapping("/register")
     public ModelAndView getRegisterOrderPage() {
         ModelAndView mv = new ModelAndView("orders/order-register-form");
-        mv.addObject("orderRequestDto", new OrderRequestDto(null, null, null, null, null, null));
+        mv.addObject("orderRequestDto", new OrderRequestDto(null, null, null, null, 0.0, null));
         mv.addObject("categories", Category.values());
         return mv;
     }
@@ -67,9 +68,8 @@ public class OrderController {
 
     @GetMapping("/edit/{id}")
     public ModelAndView getEditOrderForm(@PathVariable Long id) {
-        // Usa o método do service para obter o DTO pronto para edição
         OrderUpdateRequestDto updateDto = orderService.getOrderForUpdate(id);
-        OrderResponseDto order = orderService.findOrderById(id); // Ainda preciso do response para exibir ID e outros dados não editáveis se necessário, ou apenas para consistência
+        OrderResponseDto order = orderService.findOrderById(id);
         
         ModelAndView mv = new ModelAndView("orders/order-update-form");
         mv.addObject("order", order);

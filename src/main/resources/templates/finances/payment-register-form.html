@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Novo Pagamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">β30</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/finances">Financeiro</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/logout">Sair</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4" style="max-width: 600px;">
+    <h2>Novo Pagamento</h2>
+
+    <ul class="nav nav-tabs mb-3" id="paymentTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="order-tab" data-bs-toggle="tab" data-bs-target="#order-pane" type="button" role="tab">Pagamento de Pedido (O.S.)</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="sell-tab" data-bs-toggle="tab" data-bs-target="#sell-pane" type="button" role="tab">Pagamento de Venda</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="paymentTabsContent">
+        <div class="tab-pane fade show active" id="order-pane" role="tabpanel">
+            <form method="POST" th:action="@{/finances/payments/orders}" th:object="${paymentOrderRequestDto}">
+                <div class="mb-3">
+                    <label for="orderId" class="form-label">ID do Pedido (O.S.)</label>
+                    <input type="number" class="form-control" id="orderId" th:field="*{orderId}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="amountOrder" class="form-label">Valor</label>
+                    <input type="number" step="0.01" class="form-control" id="amountOrder" th:field="*{amount}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="paymentDateOrder" class="form-label">Data do Pagamento</label>
+                    <input type="date" class="form-control" id="paymentDateOrder" th:field="*{paymentDate}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrar Pagamento</button>
+            </form>
+        </div>
+
+        <div class="tab-pane fade" id="sell-pane" role="tabpanel">
+            <form method="POST" th:action="@{/finances/payments/sells}" th:object="${paymentProductRequestDto}">
+                <div class="mb-3">
+                    <label for="sellId" class="form-label">ID da Venda</label>
+                    <input type="number" class="form-control" id="sellId" th:field="*{sellId}" required>
+                    <div class="form-text">O ID da venda pode ser encontrado no histórico de vendas do produto.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="amountSell" class="form-label">Valor</label>
+                    <input type="number" step="0.01" class="form-control" id="amountSell" th:field="*{amount}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="paymentDateSell" class="form-label">Data do Pagamento</label>
+                    <input type="date" class="form-control" id="paymentDateSell" th:field="*{paymentDate}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrar Pagamento</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="/finances/payments" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

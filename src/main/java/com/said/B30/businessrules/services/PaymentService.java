@@ -83,6 +83,16 @@ public class PaymentService {
         Set<Payment> payments = sell.getPayments();
         return payments.stream().map(mapper::toResponsePP).collect(Collectors.toSet());
     }
+    
+    public PaymentResponseDto findPaymentById(Long id) {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        return mapper.toResponse(payment);
+    }
+
+    public PaymentUpdateRequestDto getPaymentForUpdate(Long id) {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        return new PaymentUpdateRequestDto(payment.getAmount(), payment.getPaymentDate());
+    }
 
     @Transactional
     public PaymentOrderResponseDto updateOrderPaymentData(Long id, PaymentUpdateRequestDto paymentUpdateRequest){
@@ -100,6 +110,18 @@ public class PaymentService {
         paymentUpdate.updatePaymentData(paymentUpdateRequest, payment);
         updateSellPaymentStatus(payment.getSell());
         return mapper.toResponsePP(paymentRepository.saveAndFlush(payment));
+    }
+    
+    @Transactional
+    public void updatePaymentData(Long id, PaymentUpdateRequestDto paymentUpdateRequest) {
+        var payment = paymentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(id));
+        
+        if (payment.getOrder() != null) {
+            updateOrderPaymentData(id, paymentUpdateRequest);
+        } else if (payment.getSell() != null) {
+            updateSellPaymentData(id, paymentUpdateRequest);
+        }
     }
 
     @Transactional

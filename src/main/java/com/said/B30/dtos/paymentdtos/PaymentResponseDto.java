@@ -9,5 +9,6 @@ public record PaymentResponseDto(Long id,
                                  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
                                  LocalDate paymentDate,
                                  Long orderId,
-                                 Long sellId) {
+                                 Long sellId,
+                                 Long productId) {
 }

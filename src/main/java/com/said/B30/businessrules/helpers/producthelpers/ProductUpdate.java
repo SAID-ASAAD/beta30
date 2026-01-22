@@ -15,7 +15,7 @@ public class ProductUpdate {
         if(dto.quantity() != null){
             entity.setQuantity(dto.quantity());
         }
-        if(dto.productionProcessNote() != null && !dto.productionProcessNote().isBlank()){
+        if(dto.productionProcessNote() != null){
             entity.setProductionProcessNote(dto.productionProcessNote());
         }
         if(dto.productionDate() != null){
