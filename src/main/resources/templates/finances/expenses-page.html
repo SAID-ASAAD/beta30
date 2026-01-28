@@ -53,7 +53,7 @@
                 <tr th:each="expense : ${expenses}">
                     <td th:text="${expense.description}"></td>
                     <td th:text="${#temporals.format(expense.referenceMonth, 'MM/yyyy')}"></td>
-                    <td th:text="${'R$ ' + expense.amount}"></td>
+                    <td th:text="${'R$ ' + #numbers.formatDecimal(expense.amount, 1, 'POINT', 2, 'COMMA')}"></td>                    <td>
                     <td>
                         <a th:href="@{/finances/expenses/edit/{id}(id=${expense.id})}" class="btn btn-sm btn-warning">Editar</a>
                         <form th:action="@{/finances/expenses/delete/{id}(id=${expense.id})}" method="POST" style="display: inline;">

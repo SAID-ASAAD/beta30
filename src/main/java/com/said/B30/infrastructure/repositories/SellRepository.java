@@ -27,7 +27,7 @@ public interface SellRepository extends JpaRepository<Sell, Long> {
     @Query("SELECT COALESCE(s.totalValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.sell = s), 0) " +
             "FROM Sell s WHERE s.id = :sellId")
     Double getReceivableAmountBySellId(@Param("sellId") Long sellId);
-    
+
     @Query("SELECT COALESCE(SUM(" +
            "(SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.sell = s) - " +
            "(s.quantity * ((s.product.materialValue + s.product.externalServiceValue) / " +
@@ -51,4 +51,9 @@ public interface SellRepository extends JpaRepository<Sell, Long> {
            "), 0) " +
            "FROM Sell s WHERE s.saleDate BETWEEN :startDate AND :endDate")
     Double getTotalProfitByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    
+    @Query("SELECT s FROM Sell s WHERE s.paymentStatus != 'PAYMENT_OK' AND s.saleDate BETWEEN :startDate AND :endDate")
+    List<Sell> findPendingSellsByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    
+    List<Sell> findAllBySaleDateBetween(LocalDate startDate, LocalDate endDate);
 }

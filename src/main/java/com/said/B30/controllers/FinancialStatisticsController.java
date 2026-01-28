@@ -1,7 +1,10 @@
 package com.said.B30.controllers;
 
 import com.said.B30.businessrules.services.FinancialStatisticsService;
+import com.said.B30.dtos.expensedtos.ExpenseResponseDto;
 import com.said.B30.dtos.paymentdtos.PaymentResponseDto;
+import com.said.B30.dtos.paymentdtos.ProfitDetailDto;
+import com.said.B30.dtos.paymentdtos.ReceivableDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -9,116 +12,191 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Controller
-@RequestMapping("/finances")
+@RequestMapping("/finances/statistics")
 @RequiredArgsConstructor
 public class FinancialStatisticsController {
 
     private final FinancialStatisticsService financialStatisticsService;
 
-
     @GetMapping
-    public String financeHome() {
-        return "finances/finance-home";
-    }
-
-    @GetMapping("/payments")
-    public ModelAndView getAllPayments() {
-        ModelAndView mv = new ModelAndView("finances/payments-page");
-        mv.addObject("payments", financialStatisticsService.getAllPayments());
+    public ModelAndView getStatisticsPage() {
+        ModelAndView mv = new ModelAndView("finances/statistics-page");
+        
+        mv.addObject("totalRevenue", financialStatisticsService.getTotalRevenue());
+        mv.addObject("totalReceivable", financialStatisticsService.getTotalReceivable());
+        mv.addObject("totalProfit", financialStatisticsService.getTotalNetProfit());
+        mv.addObject("totalGrossProfit", financialStatisticsService.getTotalGrossProfit());
+        mv.addObject("totalExpenses", financialStatisticsService.getTotalExpenses());
+        
         return mv;
     }
 
-    @GetMapping("/total_recebido")
+    @GetMapping("/payments/all")
+    @ResponseBody
+    public ResponseEntity<List<PaymentResponseDto>> getAllPayments(){
+        return ResponseEntity.ok(financialStatisticsService.getAllPayments());
+    }
+
+    @GetMapping("/revenue/total")
+    @ResponseBody
     public ResponseEntity<Double> getTotalRevenue(){
         return ResponseEntity.ok(financialStatisticsService.getTotalRevenue());
     }
 
-    @GetMapping("/pagamentos_por_data")
+    @GetMapping("/payments/date-range")
+    @ResponseBody
     public ResponseEntity<List<PaymentResponseDto>> getPaymentsByDateRange(
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
         return ResponseEntity.ok(financialStatisticsService.getPaymentsByDateRange(startDate, endDate));
     }
 
-    @GetMapping("/recebido_por_data")
+    @GetMapping("/revenue/date-range")
+    @ResponseBody
     public ResponseEntity<Double> getRevenueByDateRange(
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
         return ResponseEntity.ok(financialStatisticsService.getRevenueByDateRange(startDate, endDate));
     }
 
-    @GetMapping("/pagamentos_por_cliente")
+    @GetMapping("/payments/client")
+    @ResponseBody
     public ResponseEntity<List<PaymentResponseDto>> getPaymentsByClientId(@RequestParam Long clientId){
         return ResponseEntity.ok(financialStatisticsService.getPaymentsByClientId(clientId));
     }
 
-    @GetMapping("/recebido_por_cliente")
+    @GetMapping("/revenue/client")
+    @ResponseBody
     public ResponseEntity<Double> getRevenueByClientId(@RequestParam Long clientId){
         return ResponseEntity.ok(financialStatisticsService.getRevenueByClientId(clientId));
     }
 
-    @GetMapping("/total_a_receber")
+    @GetMapping("/receivable/total")
+    @ResponseBody
     public ResponseEntity<Double> getTotalReceivable(){
         return ResponseEntity.ok(financialStatisticsService.getTotalReceivable());
     }
 
-    @GetMapping("/a_receber_por_data")
+    @GetMapping("/receivable/date-range")
+    @ResponseBody
     public ResponseEntity<Double> getReceivableByDateRange(
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
         return ResponseEntity.ok(financialStatisticsService.getReceivableByDateRange(startDate, endDate));
     }
+    
+    @GetMapping("/receivable/list/date-range")
+    @ResponseBody
+    public ResponseEntity<List<ReceivableDto>> getReceivablesListByDateRange(
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
+        return ResponseEntity.ok(financialStatisticsService.getReceivablesListByDateRange(startDate, endDate));
+    }
 
-    @GetMapping("/a_receber_por_cliente")
+    @GetMapping("/receivable/client")
+    @ResponseBody
     public ResponseEntity<Double> getReceivableByClientId(@RequestParam Long clientId){
         return ResponseEntity.ok(financialStatisticsService.getReceivableByClientId(clientId));
     }
 
-    @GetMapping("/a_receber_por_pedido")
+    @GetMapping("/receivable/order")
+    @ResponseBody
     public ResponseEntity<Double> getReceivableByOrderId(@RequestParam Long orderId){
         return ResponseEntity.ok(financialStatisticsService.getReceivableByOrderId(orderId));
     }
 
-    @GetMapping("/a_receber_por_venda")
+    @GetMapping("/receivable/sell")
+    @ResponseBody
     public ResponseEntity<Double> getReceivableBySellId(@RequestParam Long sellId){
         return ResponseEntity.ok(financialStatisticsService.getReceivableBySellId(sellId));
     }
 
-    @GetMapping("/lucro_por_pedido")
+    @GetMapping("/profit/order")
+    @ResponseBody
     public ResponseEntity<Double> getProfitByOrderId(@RequestParam Long orderId){
         return ResponseEntity.ok(financialStatisticsService.getProfitByOrderId(orderId));
     }
 
-    @GetMapping("/lucro_por_produto")
+    @GetMapping("/profit/product")
+    @ResponseBody
     public ResponseEntity<Double> getProfitByProductId(@RequestParam Long productId){
         return ResponseEntity.ok(financialStatisticsService.getProfitByProductId(productId));
     }
 
-    @GetMapping("/lucro_total_pedidos")
+    @GetMapping("/profit/total-orders")
+    @ResponseBody
     public ResponseEntity<Double> getTotalOrdersProfit(){
         return ResponseEntity.ok(financialStatisticsService.getTotalOrdersProfit());
     }
 
-    @GetMapping("/lucro_total_produtos")
+    @GetMapping("/profit/total-products")
+    @ResponseBody
     public ResponseEntity<Double> getTotalProductsProfit(){
         return ResponseEntity.ok(financialStatisticsService.getTotalProductsProfit());
     }
 
-    @GetMapping("/lucro_total_geral")
-    public ResponseEntity<Double> getTotalProfit(){
-        return ResponseEntity.ok(financialStatisticsService.getTotalProfit());
+    @GetMapping("/profit/total")
+    @ResponseBody
+    public ResponseEntity<Double> getTotalProfitApi(){
+        return ResponseEntity.ok(financialStatisticsService.getTotalNetProfit());
     }
 
-    @GetMapping("/lucro_por_data")
+    @GetMapping("/profit/date-range")
+    @ResponseBody
     public ResponseEntity<Double> getTotalProfitByDateRange(
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
             @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
-        return ResponseEntity.ok(financialStatisticsService.getTotalProfitByDateRange(startDate, endDate));
+        return ResponseEntity.ok(financialStatisticsService.getTotalNetProfitByDateRange(startDate, endDate));
+    }
+    
+    @GetMapping("/profit/gross/total")
+    @ResponseBody
+    public ResponseEntity<Double> getTotalGrossProfitApi(){
+        return ResponseEntity.ok(financialStatisticsService.getTotalGrossProfit());
+    }
+
+    @GetMapping("/profit/gross/date-range")
+    @ResponseBody
+    public ResponseEntity<Double> getTotalGrossProfitByDateRange(
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
+        return ResponseEntity.ok(financialStatisticsService.getTotalGrossProfitByDateRange(startDate, endDate));
+    }
+    
+    @GetMapping("/profit/details/date-range")
+    @ResponseBody
+    public ResponseEntity<List<ProfitDetailDto>> getProfitDetailsByDateRange(
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
+        return ResponseEntity.ok(financialStatisticsService.getProfitDetailsByDateRange(startDate, endDate));
+    }
+    
+    @GetMapping("/expenses/total")
+    @ResponseBody
+    public ResponseEntity<Double> getTotalExpenses(){
+        return ResponseEntity.ok(financialStatisticsService.getTotalExpenses());
+    }
+    
+    @GetMapping("/expenses/date-range")
+    @ResponseBody
+    public ResponseEntity<Double> getTotalExpensesByDateRange(
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
+        return ResponseEntity.ok(financialStatisticsService.getTotalExpensesByDateRange(startDate, endDate));
+    }
+    
+    @GetMapping("/expenses/list/date-range")
+    @ResponseBody
+    public ResponseEntity<List<ExpenseResponseDto>> getExpensesListByDateRange(
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate endDate){
+        return ResponseEntity.ok(financialStatisticsService.getExpensesByDateRange(startDate, endDate));
     }
 }

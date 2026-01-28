@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Estatísticas Financeiras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">β30</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/finances">Financeiro</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/users/logout">Sair</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2>Estatísticas Financeiras</h2>
+
+    <!-- Filtro -->
+    <div class="card mb-4 mt-3">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="startDate" class="form-label">Data Início</label>
+                    <input type="date" id="startDate" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="endDate" class="form-label">Data Fim</label>
+                    <input type="date" id="endDate" class="form-control">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-primary w-100" onclick="updateStats()">Filtrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3 h-100" style="cursor: pointer;" onclick="showDetails('revenue')">
+                <div class="card-header">Receita Total</div>
+                <div class="card-body">
+                    <h3 class="card-title" id="totalRevenue" th:text="${#numbers.formatCurrency(totalRevenue)}"></h3>
+                    <small>Clique para ver pagamentos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3 h-100" style="cursor: pointer;" onclick="showDetails('receivable')">
+                <div class="card-header">A Receber</div>
+                <div class="card-body">
+                    <h3 class="card-title" id="totalReceivable" th:text="${#numbers.formatCurrency(totalReceivable)}"></h3>
+                    <small>Clique para ver pendências</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3 h-100" style="cursor: pointer;" onclick="showDetails('profit')">
+                <div class="card-header">Lucratividade</div>
+                <div class="card-body">
+                    <h3 class="card-title" id="totalProfit" th:text="${#numbers.formatCurrency(totalProfit)}"></h3>
+                    <small>Clique para ver detalhes</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3 h-100" style="cursor: pointer;" onclick="showDetails('expenses')">
+                <div class="card-header">Despesas</div>
+                <div class="card-body">
+                    <h3 class="card-title" id="totalExpenses" th:text="${#numbers.formatCurrency(totalExpenses)}"></h3>
+                    <small>Clique para ver despesas</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área de Detalhes -->
+    <div id="detailsArea" style="display: none;" class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 id="detailsTitle" class="mb-0">Detalhes</h4>
+            <button type="button" class="btn-close" onclick="document.getElementById('detailsArea').style.display='none'"></button>
+        </div>
+        <div class="card-body" id="detailsContent">
+            <!-- Conteúdo dinâmico (Tabela ou Abas) -->
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="/finances" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+<script>
+    function formatDate(dateStr) {
+        if (!dateStr) return '';
+        if (dateStr.includes('/')) return dateStr;
+        if (dateStr.split('-')[0].length === 2) return dateStr.replace(/-/g, '/');
+        const parts = dateStr.split('-');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function formatCurrency(value) {
+        const number = value || 0;
+        return number.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function updateStats() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert("Selecione ambas as datas.");
+            return;
+        }
+
+        const startParts = startDate.split('-');
+        const endParts = endDate.split('-');
+        const startFormatted = `${startParts[2]}-${startParts[1]}-${startParts[0]}`;
+        const endFormatted = `${endParts[2]}-${endParts[1]}-${endParts[0]}`;
+
+        const params = `?startDate=${startFormatted}&endDate=${endFormatted}`;
+
+        fetch(`/finances/statistics/revenue/date-range${params}`)
+            .then(res => res.json())
+            .then(val => document.getElementById('totalRevenue').innerText = formatCurrency(val));
+
+        fetch(`/finances/statistics/receivable/date-range${params}`)
+            .then(res => res.json())
+            .then(val => document.getElementById('totalReceivable').innerText = formatCurrency(val));
+
+        fetch(`/finances/statistics/profit/date-range${params}`)
+            .then(res => res.json())
+            .then(val => document.getElementById('totalProfit').innerText = formatCurrency(val));
+
+        fetch(`/finances/statistics/expenses/date-range${params}`)
+            .then(res => res.json())
+            .then(val => document.getElementById('totalExpenses').innerText = formatCurrency(val));
+
+        document.getElementById('detailsArea').style.display = 'none';
+    }
+
+    function showDetails(type) {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        let params = '';
+
+        if (startDate && endDate) {
+            const startParts = startDate.split('-');
+            const endParts = endDate.split('-');
+            const startFormatted = `${startParts[2]}-${startParts[1]}-${startParts[0]}`;
+            const endFormatted = `${endParts[2]}-${endParts[1]}-${endParts[0]}`;
+            params = `?startDate=${startFormatted}&endDate=${endFormatted}`;
+        }
+
+        const detailsContent = document.getElementById('detailsContent');
+        const title = document.getElementById('detailsTitle');
+        const area = document.getElementById('detailsArea');
+        area.style.display = 'block';
+        detailsContent.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+
+        if (type === 'revenue') {
+            title.innerText = 'Detalhamento de Receita (Pagamentos Recebidos)';
+            const url = params ? `/finances/statistics/payments/date-range${params}` : '/finances/statistics/payments/all';
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    let html = '<div class="table-responsive"><table class="table table-striped table-hover"><thead><tr><th>ID</th><th>Data</th><th>Valor</th><th>Cliente</th><th>Origem</th></tr></thead><tbody>';
+                    data.forEach(p => {
+                        let origin = '';
+                        if (p.orderId) {
+                            const osNum = String(p.orderId).padStart(4, '0');
+                            origin = `<a href="/orders/details/${p.orderId}">O.S. #${osNum}</a>`;
+                        } else if (p.sellId) {
+                            const sellNum = String(p.sellId).padStart(4, '0');
+                            if (p.productId) {
+                                origin = `<a href="/products/details/${p.productId}">Venda #${sellNum}</a>`;
+                            } else {
+                                origin = `Venda #${sellNum}`;
+                            }
+                        }
+
+                        html += `<tr>
+                            <td>${p.id}</td>
+                            <td>${formatDate(p.paymentDate)}</td>
+                            <td>${formatCurrency(p.amount)}</td>
+                            <td>${p.clientName || '-'}</td>
+                            <td>${origin}</td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                    detailsContent.innerHTML = html;
+                });
+        } else if (type === 'receivable') {
+            title.innerText = 'Detalhamento de Valores a Receber (Pendências)';
+            if (!params) {
+                detailsContent.innerHTML = '<p>Selecione um período para ver os detalhes.</p>';
+                return;
+            }
+
+            const url = `/finances/statistics/receivable/list/date-range${params}`;
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    let html = '<div class="table-responsive"><table class="table table-striped table-hover"><thead><tr><th>Tipo</th><th>Descrição</th><th>Cliente</th><th>Total</th><th>Pago</th><th>Restante</th></tr></thead><tbody>';
+                    data.forEach(r => {
+                        let link = r.description;
+                        if (r.type === 'Pedido') {
+                            link = `<a href="/orders/details/${r.id}">${r.description}</a>`;
+                        } else {
+                            link = `<a href="/products/details/${r.id}">Venda #${String(r.id).padStart(4, '0')} - ${r.description}</a>`;
+                        }
+
+                        html += `<tr>
+                            <td>${r.type}</td>
+                            <td>${link}</td>
+                            <td>${r.clientName}</td>
+                            <td>${formatCurrency(r.totalValue)}</td>
+                            <td>${formatCurrency(r.paidValue)}</td>
+                            <td class="text-danger fw-bold">${formatCurrency(r.remainingValue)}</td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                    detailsContent.innerHTML = html;
+                });
+        } else if (type === 'expenses') {
+            title.innerText = 'Detalhamento de Despesas';
+            if (!params) {
+                detailsContent.innerHTML = '<p>Selecione um período para ver os detalhes das despesas.</p>';
+                return;
+            }
+
+            const url = `/finances/statistics/expenses/list/date-range${params}`;
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    let html = '<div class="table-responsive"><table class="table table-striped table-hover"><thead><tr><th>Descrição</th><th>Mês Ref.</th><th>Valor</th></tr></thead><tbody>';
+                    data.forEach(e => {
+                        html += `<tr>
+                            <td>${e.description}</td>
+                            <td>${formatDate(e.referenceMonth)}</td>
+                            <td>${formatCurrency(e.amount)}</td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                    detailsContent.innerHTML = html;
+                });
+        } else if (type === 'profit') {
+            title.innerText = 'Detalhamento de Lucratividade';
+
+            let tabsHtml = `
+                <ul class="nav nav-tabs mb-3" id="profitTabs" role="tablist">
+                  <li class="nav-item"><button class="nav-link active" id="net-tab" data-bs-toggle="tab" data-bs-target="#net-profit" type="button">Lucro Líquido</button></li>
+                  <li class="nav-item"><button class="nav-link" id="gross-tab" data-bs-toggle="tab" data-bs-target="#gross-profit" type="button">Lucro Bruto</button></li>
+                  <li class="nav-item"><button class="nav-link" id="item-tab" data-bs-toggle="tab" data-bs-target="#item-profit" type="button">Por Item</button></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane fade show active" id="net-profit"></div>
+                  <div class="tab-pane fade" id="gross-profit"></div>
+                  <div class="tab-pane fade" id="item-profit"></div>
+                </div>
+            `;
+            detailsContent.innerHTML = tabsHtml;
+
+            const revenue = document.getElementById('totalRevenue').innerText;
+            const expenses = document.getElementById('totalExpenses').innerText;
+            const profit = document.getElementById('totalProfit').innerText;
+
+            let netHtml = `
+                <table class="table">
+                    <thead><tr><th>Item</th><th>Valor</th></tr></thead>
+                    <tbody>
+                        <tr class="table-success"><td>(+) Receita Total (Pagamentos Recebidos)</td><td>${revenue}</td></tr>
+                        <tr class="table-danger"><td>(-) Despesas Operacionais</td><td>${expenses}</td></tr>
+                        <tr class="table-info fw-bold"><td>(=) Lucro Líquido</td><td>${profit}</td></tr>
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('net-profit').innerHTML = netHtml;
+
+            const grossUrl = params ? `/finances/statistics/profit/gross/date-range${params}` : '/finances/statistics/profit/gross/total';
+            fetch(grossUrl)
+                .then(res => res.json())
+                .then(grossVal => {
+                    let grossHtml = `
+                        <div class="text-center p-4">
+                            <h4 class="text-muted mb-3">Lucro Bruto Total</h4>
+                            <h1 class="display-4 text-primary fw-bold mb-3">${formatCurrency(grossVal)}</h1>
+                            <p class="text-muted">Receita de Vendas - Custos Diretos (Material + Serviços)</p>
+                        </div>
+                    `;
+                    document.getElementById('gross-profit').innerHTML = grossHtml;
+                });
+
+            if (!params) {
+                document.getElementById('item-profit').innerHTML = '<p>Selecione um período para ver o lucro por item.</p>';
+            } else {
+                const url = `/finances/statistics/profit/details/date-range${params}`;
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        let itemHtml = '<div class="table-responsive"><table class="table table-striped table-hover"><thead><tr><th>Tipo</th><th>Descrição</th><th>Receita (Pago)</th><th>Custo Est.</th><th>Lucro</th></tr></thead><tbody>';
+                        data.forEach(d => {
+                            let link = d.description;
+                            if (d.type === 'Pedido') link = `<a href="/orders/details/${d.id}">${d.description}</a>`;
+                            else link = `<a href="/products/details/${d.id}">Venda #${String(d.id).padStart(4, '0')} - ${d.description}</a>`;
+
+                            itemHtml += `<tr>
+                                <td>${d.type}</td>
+                                <td>${link}</td>
+                                <td>${formatCurrency(d.revenue)}</td>
+                                <td>${formatCurrency(d.cost)}</td>
+                                <td class="${d.profit >= 0 ? 'text-success' : 'text-danger'} fw-bold">${formatCurrency(d.profit)}</td>
+                            </tr>`;
+                        });
+                        itemHtml += '</tbody></table></div>';
+                        document.getElementById('item-profit').innerHTML = itemHtml;
+                    });
+            }
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

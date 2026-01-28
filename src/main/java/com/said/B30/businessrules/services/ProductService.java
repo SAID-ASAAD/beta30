@@ -48,13 +48,14 @@ public class ProductService {
         }
 
         Sell sell = Sell.builder()
+                .product(product)
                 .client(client)
                 .quantity(quantity)
                 .unitValue(establishedValue)
                 .totalValue(quantity * establishedValue)
                 .saleDate(LocalDate.now())
                 .build();
-        
+
         product.addSell(sell);
 
         if(initialPayment != null && initialPayment > 0){
@@ -134,7 +135,7 @@ public class ProductService {
     public void deleteProduct(Long id) {
         var product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
         if (!product.getSales().isEmpty()) {
-              throw new DeletionNotAllowedException("Produto possui vendas registradas.");
+             throw new DeletionNotAllowedException("Produto possui vendas registradas.");
         }
         productRepository.delete(product);
     }

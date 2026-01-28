@@ -54,7 +54,7 @@
                 <tr th:each="payment : ${payments}">
                     <td th:text="${payment.id}"></td>
                     <td th:text="${#temporals.format(payment.paymentDate, 'dd/MM/yyyy')}"></td>
-                    <td th:text="${'R$ ' + payment.amount}"></td>
+                    <td th:text="${'R$ ' + #numbers.formatDecimal(payment.amount, 1, 'POINT', 2, 'COMMA')}"></td>
                     <td>
                         <a th:if="${payment.orderId != null}" th:href="@{/orders/details/{id}(id=${payment.orderId})}">O.S. #<span th:text="${#numbers.formatInteger(payment.orderId, 4)}"></span></a>
                         <a th:if="${payment.sellId != null}" th:href="@{/products/details/{id}(id=${payment.productId})}">Venda #<span th:text="${#numbers.formatInteger(payment.sellId, 4)}"></span></a>
