@@ -4,6 +4,7 @@ import com.said.B30.dtos.paymentdtos.*;
 import com.said.B30.infrastructure.entities.Payment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
@@ -31,5 +32,17 @@ public interface PaymentMapper {
     @Mapping(target = "sellId", source = "sell.id")
     @Mapping(target = "orderId", source = "order.id")
     @Mapping(target = "productId", source = "sell.product.id")
+    @Mapping(target = "clientName", source = "paymentEntity", qualifiedByName = "getClientName")
     PaymentResponseDto toResponse(Payment paymentEntity);
+
+    @Named("getClientName")
+    default String getClientName(Payment payment) {
+        if (payment.getOrder() != null && payment.getOrder().getClient() != null) {
+            return payment.getOrder().getClient().getName();
+        }
+        if (payment.getSell() != null && payment.getSell().getClient() != null) {
+            return payment.getSell().getClient().getName();
+        }
+        return null;
+    }
 }

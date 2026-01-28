@@ -42,12 +42,13 @@
             <input type="hidden" id="clientId" th:field="*{clientId}">
             <div id="clientSearchResults" class="list-group mt-1"></div>
             <div id="clientSearchError" class="text-danger small mt-1" style="display: none;">Cliente não encontrado.</div>
+            <div class="text-danger" th:if="${#fields.hasErrors('clientId')}" th:errors="*{clientId}"></div>
         </div>
 
         <div class="mb-3">
             <label for="category" class="form-label">Categoria</label>
             <select class="form-select" id="category" th:field="*{category}"
-                    th:classappend="${#fields.hasErrors('category')} ? 'is-invalid' : ''" required>
+                    th:classappend="${#fields.hasErrors('category')} ? 'is-invalid' : ''">
                 <option value="" selected>Selecione uma categoria</option>
                 <option th:each="cat : ${categories}"
                         th:value="${cat}"
@@ -59,28 +60,28 @@
         <div class="mb-3">
             <label for="description" class="form-label">Descrição</label>
             <input type="text" class="form-control" id="description" th:field="*{description}"
-                   th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''" required>
+                   th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Erro na descrição</div>
         </div>
 
         <div class="mb-3">
             <label for="deliveryDate" class="form-label">Data de Entrega</label>
             <input type="date" class="form-control" id="deliveryDate" th:field="*{deliveryDate}"
-                   th:classappend="${#fields.hasErrors('deliveryDate')} ? 'is-invalid' : ''" required>
+                   th:classappend="${#fields.hasErrors('deliveryDate')} ? 'is-invalid' : ''">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('deliveryDate')}" th:errors="*{deliveryDate}">Erro na Data</div>
         </div>
 
         <div class="mb-3">
             <label for="establishedValue" class="form-label">Valor Estabelecido</label>
             <input type="number" step="0.01" class="form-control" id="establishedValue" th:field="*{establishedValue}"
-                   th:classappend="${#fields.hasErrors('establishedValue')} ? 'is-invalid' : ''" required>
+                   th:classappend="${#fields.hasErrors('establishedValue')} ? 'is-invalid' : ''">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('establishedValue')}" th:errors="*{establishedValue}">Erro no Valor Estabelecido</div>
         </div>
 
         <div class="mb-3">
             <label for="deposit" class="form-label">Sinal Pago</label>
             <input type="number" step="0.01" class="form-control" id="deposit" th:field="*{deposit}"
-                   th:classappend="${#fields.hasErrors('deposit')}" th:errors="*{deposit}" required>
+                   th:classappend="${#fields.hasErrors('deposit')} ? 'is-invalid' : ''">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('deposit')}" th:errors="*{deposit}">Erro no Sinal</div>
         </div>
 

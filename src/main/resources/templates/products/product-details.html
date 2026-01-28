@@ -45,6 +45,7 @@
         </div>
         <div class="card-body">
             <div class="row">
+                <!-- Coluna da Esquerda: Informações Gerais -->
                 <div class="col-md-6 border-end">
                     <h5 class="card-title mb-3 text-primary">Informações Gerais</h5>
 
@@ -72,6 +73,7 @@
                     </div>
                 </div>
 
+                <!-- Coluna da Direita: Financeiro e Notas -->
                 <div class="col-md-6">
                     <h5 class="card-title mb-3 text-success">Financeiro e Processos</h5>
 
@@ -130,6 +132,7 @@
         </div>
     </div>
 
+    <!-- Card Histórico de Vendas -->
     <div class="card mb-4">
         <div class="card-header">
             <h4>Histórico de Vendas</h4>
@@ -138,22 +141,32 @@
             <table class="table table-hover" th:if="${not #lists.isEmpty(sales)}">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Data</th>
                         <th>Cliente</th>
                         <th>Qtd</th>
                         <th>Valor Unit.</th>
                         <th>Total</th>
-                        <th>Status Pagamento</th>
+                        <th>Status Pagto</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="sell : ${sales}">
+                        <td>Venda #<span th:text="${#numbers.formatInteger(sell.id, 4)}"></span></td>
                         <td th:text="${#temporals.format(sell.saleDate, 'dd/MM/yyyy')}"></td>
                         <td><a th:href="@{/clients/details/{id}(id=${sell.client.id})}" th:text="${sell.client.name}"></a></td>
                         <td th:text="${sell.quantity}"></td>
                         <td th:text="${'R$ ' + sell.unitValue}"></td>
                         <td th:text="${'R$ ' + sell.totalValue}"></td>
-                        <td th:text="${sell.paymentStatus.description}"></td>
+                        <td th:text="${sell.paymentStatus}"></td>
+                        <td>
+                            <a th:href="@{/finances/sells/edit/{id}(id=${sell.id})}" class="btn btn-sm btn-warning">Editar</a>
+                            <form th:action="@{/finances/sells/delete/{id}(id=${sell.id})}" method="POST" style="display: inline;">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza?');">Excluir</button>
+                            </form>
+                        </td>
                     </tr>
                 </tbody>
             </table>

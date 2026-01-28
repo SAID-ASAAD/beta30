@@ -98,10 +98,10 @@
                                 <div>
                                     <strong th:text="'#' + ${#numbers.formatInteger(sell.product.id, 4)} + ' - ' + ${sell.product.description}"></strong><br>
                                     <small class="text-muted">Data: <span th:text="${#temporals.format(sell.saleDate, 'dd/MM/yyyy')}"></span></small><br>
-                                    <small class="text-muted">Qtd: <span th:text="${sell.quantity}"></span> | Total: <span th:text="${'R$ ' + sell.totalValue}"></span></small>
+                                    <small class="text-muted">Qtd: <span th:text="${sell.quantity}"></span> | Total: <span th:text="${'R$ ' + #numbers.formatDecimal(sell.totalValue, 1, 'POINT', 2, 'COMMA')}"></span></small>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-secondary d-block mb-1" th:text="${sell.paymentStatus.description}"></span>
+                                    <span class="badge bg-secondary d-block mb-1" th:text="${sell.paymentStatus}"></span>
                                     <a th:href="@{/products/details/{id}(id=${sell.product.id})}" class="btn btn-sm btn-outline-primary">Ver Produto</a>
                                 </div>
                             </div>

@@ -61,7 +61,7 @@
                     <td th:text="${#numbers.formatInteger(product.id, 4)}"></td>
                     <td th:text="${product.description}"></td>
                     <td th:text="${product.productStatus.description}"></td>
-                    <td th:text="${'R$ ' + product.preEstablishedValue}"></td>
+                    <td th:text="${'R$ ' + #numbers.formatDecimal(product.preEstablishedValue, 1, 'POINT', 2, 'COMMA')}"></td>
                     <td>
                         <a th:href="@{/products/details/{id}(id=${product.id})}" class="btn btn-sm btn-info">Acessar Dados</a>
                     </td>
@@ -95,9 +95,13 @@
 
 <script>
     const statusMap = {
-        'AVAILABLE': 'DISPONÍVEL',
-        'SOLD': 'VENDIDO'
+        'AVAILABLE': 'disponível',
+        'SOLD': 'vendido'
     };
+
+    function formatCurrency(value) {
+        return 'R$ ' + (value || 0).toFixed(2).replace('.', ',');
+    }
 
     function searchProducts() {
         const query = document.getElementById('searchInput').value;
@@ -130,7 +134,7 @@
                                 <td>${idFormatted}</td>
                                 <td>${product.description}</td>
                                 <td>${statusDesc}</td>
-                                <td>R$ ${product.preEstablishedValue}</td>
+                                <td>${formatCurrency(product.preEstablishedValue)}</td>
                                 <td>
                                     <a href="/products/details/${product.id}" class="btn btn-sm btn-info">Acessar Dados</a>
                                 </td>

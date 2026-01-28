@@ -31,18 +31,18 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findOrdersNotCanceled(Pageable pageable);
 
     @Query("SELECT COALESCE(SUM(o.establishedValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o)), 0) " +
-            "FROM Order o WHERE o.paymentStatus != 'PAYMENT_OK'")
+            "FROM Order o WHERE o.paymentStatus != 'PAYMENT_OK' AND o.orderStatus != 'CANCELED'")
     Double totalReceivable();
 
     @Query("SELECT COALESCE(SUM(o.establishedValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o)), 0) " +
-            "FROM Order o WHERE o.paymentStatus != 'PAYMENT_OK' AND o.deliveryDate BETWEEN :startDate AND :endDate")
+            "FROM Order o WHERE o.paymentStatus != 'PAYMENT_OK' AND o.orderStatus != 'CANCELED' AND o.deliveryDate BETWEEN :startDate AND :endDate")
     Double totalReceivableByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @Query("SELECT COALESCE(SUM(o.establishedValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o)), 0) " +
-            "FROM Order o WHERE o.paymentStatus != 'PAYMENT_OK' AND o.client.id = :clientId")
+            "FROM Order o WHERE o.paymentStatus != 'PAYMENT_OK' AND o.orderStatus != 'CANCELED' AND o.client.id = :clientId")
     Double totalReceivableByClientId(@Param("clientId") Long clientId);
 
-    @Query("SELECT COALESCE(o.establishedValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o), 0) " +
+    @Query("SELECT CASE WHEN o.orderStatus = 'CANCELED' THEN 0.0 ELSE COALESCE(o.establishedValue - (SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o), 0) END " +
             "FROM Order o WHERE o.id = :orderId")
     Double getReceivableAmount(@Param("orderId") Long orderId);
 
@@ -57,4 +57,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT COALESCE(SUM((SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.order = o) - (COALESCE(o.materialValue, 0) + COALESCE(o.externalServiceValue, 0))), 0) " +
             "FROM Order o WHERE o.deliveryDate BETWEEN :startDate AND :endDate")
     Double getTotalProfitByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    
+    @Query("SELECT o FROM Order o WHERE o.paymentStatus != 'PAYMENT_OK' AND o.orderStatus != 'CANCELED' AND o.deliveryDate BETWEEN :startDate AND :endDate")
+    List<Order> findPendingOrdersByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    
+    List<Order> findAllByDeliveryDateBetween(LocalDate startDate, LocalDate endDate);
 }

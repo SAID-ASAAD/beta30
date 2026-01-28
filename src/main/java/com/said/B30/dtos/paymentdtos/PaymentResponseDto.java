@@ -10,5 +10,6 @@ public record PaymentResponseDto(Long id,
                                  LocalDate paymentDate,
                                  Long orderId,
                                  Long sellId,
-                                 Long productId) {
+                                 Long productId,
+                                 String clientName) {
 }

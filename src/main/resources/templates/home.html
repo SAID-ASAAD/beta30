@@ -48,7 +48,7 @@
                         <thead>
                         <tr>
                             <th scope="col">O.S.</th>
-                            <th scope="col">Serviço</th>
+                            <th scope="col">Categoria</th>
                             <th scope="col">Descrição</th>
                             <th scope="col">Data de Entrega</th>
                             <th scope="col">Status</th>
@@ -57,7 +57,7 @@
                         <tbody>
                         <tr th:each="order : ${orders.content}"
                             th:classappend="${order.orderStatus.name() == 'COMPLETED' ? 'table-success' : (order.orderStatus.name() != 'CANCELED' and order.deliveryDate != null and order.deliveryDate.isBefore(T(java.time.LocalDate).now().plusDays(8)) ? 'table-danger' : '')}">
-                            <td th:text="${#numbers.formatInteger(order.id, 4)}"></td>
+                            <td><a th:href="@{/orders/details/{id}(id=${order.id})}" th:text="${#numbers.formatInteger(order.id, 4)}"></a></td>
                             <td th:text="${order.category.description}"></td>
                             <td th:text="${order.description}"></td>
                             <td th:text="${#temporals.format(order.deliveryDate, 'dd/MM/yyyy')}"></td>
