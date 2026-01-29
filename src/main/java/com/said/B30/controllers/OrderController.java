@@ -48,7 +48,6 @@ public class OrderController {
     @GetMapping("/register")
     public ModelAndView getRegisterOrderPage() {
         ModelAndView mv = new ModelAndView("orders/order-register-form");
-        // Inicializa deposit com 0.0 para evitar campo vazio/bugado
         mv.addObject("orderRequestDto", new OrderRequestDto(null, null, null, null, 0.0, null));
         mv.addObject("categories", Category.values());
         return mv;
@@ -67,7 +66,6 @@ public class OrderController {
 
     @GetMapping("/edit/{id}")
     public ModelAndView getEditOrderForm(@PathVariable Long id) {
-        // Usa o método do service para obter o DTO pronto para edição
         OrderUpdateRequestDto updateDto = orderService.getOrderForUpdate(id);
         OrderResponseDto order = orderService.findOrderById(id); 
         
@@ -84,7 +82,6 @@ public class OrderController {
     public ModelAndView updateOrderData(@PathVariable Long id, @Valid OrderUpdateRequestDto orderUpdate, BindingResult result) {
         if (result.hasErrors()) {
              ModelAndView mv = new ModelAndView("orders/order-update-form");
-             // Reconstrução manual do OrderResponseDto com 15 argumentos
              mv.addObject("order", new OrderResponseDto(id, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
              mv.addObject("categories", Category.values());
              mv.addObject("statuses", OrderStatus.values());

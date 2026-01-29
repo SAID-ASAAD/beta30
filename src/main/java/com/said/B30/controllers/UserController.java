@@ -8,13 +8,16 @@ import com.said.B30.businessrules.services.UserService;
 import com.said.B30.infrastructure.entities.User;
 import com.said.B30.security.services.TokenService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -54,8 +57,16 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
         addAuthCookie(response, null, 0);
+        
+        SecurityContextHolder.clearContext();
+        
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
         return "redirect:/users/login";
     }
 
@@ -63,6 +74,7 @@ public class UserController {
         Cookie cookie = new Cookie(AUTH_COOKIE_NAME, token);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
+      //cookie.setSecure(true);
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }

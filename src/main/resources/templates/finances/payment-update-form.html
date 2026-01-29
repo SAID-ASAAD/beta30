@@ -40,7 +40,7 @@
 
         <div class="mb-3">
             <label for="amount" class="form-label">Valor</label>
-            <input type="number" step="0.01" class="form-control" id="amount" th:field="*{amount}" required>
+            <input type="text" class="form-control currency-input" id="amount" th:field="*{amount}" required>
             <div class="text-danger" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></div>
         </div>
 
@@ -54,6 +54,20 @@
         <a href="/finances/payments" class="btn btn-danger">Cancelar</a>
     </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.currency-input').inputmask('currency', {
+            radixPoint: ',',
+            groupSeparator: '.',
+            prefix: 'R$ ',
+            autoUnmask: true,
+            removeMaskOnSubmit: true
+        });
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
