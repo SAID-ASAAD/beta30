@@ -6,17 +6,21 @@ import com.said.B30.infrastructure.enums.OrderStatus;
 
 import java.time.LocalDate;
 
-public record OrderUpdateRequestDto(Category category,
+public record OrderUpdateRequestDto(
+                                    Category category,
                                     String description,
                                     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
                                     LocalDate orderDate,
                                     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
                                     LocalDate deliveryDate,
+                                    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+                                    LocalDate exitDate,
                                     Double establishedValue,
                                     Double externalServiceValue,
                                     Double materialValue,
                                     String invoice,
                                     String productionProcessNote,
+                                    String unexpectedIssue,
                                     OrderStatus orderStatus,
                                     Long clientId) {
 }

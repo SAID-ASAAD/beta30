@@ -28,7 +28,7 @@
 </nav>
 
 <div class="container mt-4" style="max-width: 800px;">
-    <h2>Atualizar Pedido</h2>
+    <h2>Atualizar Pedido #<span th:text="${#numbers.formatInteger(order.id, 4)}"></span></h2>
 
     <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}">
         Mensagem de erro genérica.
@@ -37,19 +37,18 @@
     <form method="POST" th:action="@{/orders/edit/{id}(id=${order.id})}" th:object="${orderUpdateRequestDto}">
         <input type="hidden" name="_method" value="PUT"/>
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="clientId" class="form-label">ID do Cliente</label>
-                <input type="number" class="form-control" id="clientId" th:field="*{clientId}" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="category" class="form-label">Serviço</label>
-                <select class="form-select" id="category" th:field="*{category}">
-                    <option th:each="cat : ${categories}"
-                            th:value="${cat}"
-                            th:text="${cat.description}"></option>
-                </select>
-            </div>
+        <div class="mb-3">
+            <label for="clientId" class="form-label">ID do Cliente</label>
+            <input type="number" class="form-control" id="clientId" th:field="*{clientId}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Categoria</label>
+            <select class="form-select" id="category" th:field="*{category}">
+                <option th:each="cat : ${categories}"
+                        th:value="${cat}"
+                        th:text="${cat.description}"></option>
+            </select>
         </div>
 
         <div class="mb-3">
@@ -58,28 +57,32 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label for="orderDate" class="form-label">Data do Pedido</label>
                 <input type="date" class="form-control" id="orderDate" th:field="*{orderDate}">
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label for="deliveryDate" class="form-label">Data de Entrega</label>
                 <input type="date" class="form-control" id="deliveryDate" th:field="*{deliveryDate}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="exitDate" class="form-label">Data de Saída</label>
+                <input type="date" class="form-control" id="exitDate" th:field="*{exitDate}">
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="establishedValue" class="form-label">Valor Estabelecido</label>
-                <input type="number" step="0.01" class="form-control" id="establishedValue" th:field="*{establishedValue}">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="externalServiceValue" class="form-label">Valor Serviço Externo</label>
-                <input type="number" step="0.01" class="form-control" id="externalServiceValue" th:field="*{externalServiceValue}">
+                <input type="text" class="form-control currency-input" id="establishedValue" th:field="*{establishedValue}">
             </div>
             <div class="col-md-4 mb-3">
                 <label for="materialValue" class="form-label">Valor Material</label>
-                <input type="number" step="0.01" class="form-control" id="materialValue" th:field="*{materialValue}">
+                <input type="text" class="form-control currency-input" id="materialValue" th:field="*{materialValue}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="externalServiceValue" class="form-label">Valor Serviço Ext.</label>
+                <input type="text" class="form-control currency-input" id="externalServiceValue" th:field="*{externalServiceValue}">
             </div>
         </div>
 
@@ -91,6 +94,11 @@
         <div class="mb-3">
             <label for="productionProcessNote" class="form-label">Observação de Produção</label>
             <textarea class="form-control" id="productionProcessNote" th:field="*{productionProcessNote}" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="unexpectedIssue" class="form-label text-danger">Problema Inesperado (Surpresa ?)</label>
+            <textarea class="form-control border-danger" id="unexpectedIssue" th:field="*{unexpectedIssue}" rows="2" placeholder="Relate problemas inesperados aqui..."></textarea>
         </div>
 
         <div class="mb-3">
@@ -106,6 +114,20 @@
         <a th:href="@{/orders/details/{id}(id=${order.id})}" class="btn btn-danger">Cancelar</a>
     </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.currency-input').inputmask('currency', {
+            radixPoint: ',',
+            groupSeparator: '.',
+            prefix: 'R$ ',
+            autoUnmask: true,
+            removeMaskOnSubmit: true
+        });
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>

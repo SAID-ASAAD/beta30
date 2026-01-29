@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Pedidos")
+@Table(name = "pedidos")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,45 +29,39 @@ public class Order implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
-
-    @Column(name = "descrição", nullable = false)
-    private String description;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "categoria", nullable = false)
     private Category category;
-
+    @Column(name = "descrição", nullable = false)
+    private String description;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "data_do_pedido")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate orderDate;
-
-    @Column(name = "data_de_entrega", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @Column(name = "data_de_entrega", nullable = false)
     private LocalDate deliveryDate;
-
-    @Column(name = "valor_de_material")
-    private Double materialValue;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @Column(name = "data_de_saída")
+    private LocalDate exitDate;
     @Column(name = "valor_cobrado", nullable = false)
     private Double establishedValue;
-
     @Column(name = "valor_serviço_terceiro")
     private Double externalServiceValue;
-
-    @Column(name = "status_do_pedido")
-    private OrderStatus orderStatus;
-
-    @Column(name = "observações_da_produção")
-    private String productionProcessNote;
-
+    @Column(name = "valor_de_material")
+    private Double materialValue;
     @Column(name = "sinal", nullable = false)
     private Double deposit;
-
-    @Column(name = "status_do_pagamento")
-    private PaymentStatus paymentStatus;
-
     @Column(name = "nota_fiscal")
     private String invoice;
-
+    @Column(name = "observações_da_produção")
+    private String productionProcessNote;
+    @Column(name = "problema_inesperado")
+    private String unexpectedIssue; // Novo atributo
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_do_pedido")
+    private OrderStatus orderStatus;
+    @Column(name = "status_do_pagamento")
+    private PaymentStatus paymentStatus;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
@@ -86,14 +80,12 @@ public class Order implements Serializable {
     private void prePersist(){
         this.orderDate = LocalDate.now();
         this.orderStatus = OrderStatus.IN_PROGRESS;
-
-        if(deposit == 0){
-            this.paymentStatus = PaymentStatus.PENDING_DEPOSIT;
-        } else if (deposit > 0 && deposit < establishedValue) {
-            this.paymentStatus = PaymentStatus.DEPOSIT_PAID;
-        } else if (deposit.equals(establishedValue)) {
+        if(this.deposit >= this.establishedValue){
             this.paymentStatus = PaymentStatus.PAYMENT_OK;
+        } else if (this.deposit > 0 && this.deposit < this.establishedValue) {
+            this.paymentStatus = PaymentStatus.DEPOSIT_PAID;
+        } else {
+            this.paymentStatus = PaymentStatus.PENDING_DEPOSIT;
         }
     }
-
 }

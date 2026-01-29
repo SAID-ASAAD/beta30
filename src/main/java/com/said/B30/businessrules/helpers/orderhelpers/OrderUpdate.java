@@ -25,6 +25,9 @@ public class OrderUpdate {
         if (dto.deliveryDate() != null){
             entity.setDeliveryDate(dto.deliveryDate());
         }
+        if (dto.exitDate() != null){
+            entity.setExitDate(dto.exitDate());
+        }
         if (dto.establishedValue() != null){
             entity.setEstablishedValue(dto.establishedValue());
         }
@@ -43,6 +46,9 @@ public class OrderUpdate {
         }
         if (dto.productionProcessNote() != null){
             entity.setProductionProcessNote(dto.productionProcessNote());
+        }
+        if (dto.unexpectedIssue() != null){
+            entity.setUnexpectedIssue(dto.unexpectedIssue());
         }
         if (dto.orderStatus() != null){
             entity.setOrderStatus(dto.orderStatus());
