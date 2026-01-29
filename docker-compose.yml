@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: b30_db
+    environment:
+      POSTGRES_DB: b30_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "1234"
+    volumes:
+      # Renomeado para forçar a recriação do banco com as credenciais corretas
+      - b30_postgres_data_v2:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  app:
+    build: .
+    container_name: b30_app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/b30_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "1234"
+      JWT_SECRET: segredo_super_secreto_producao
+    ports:
+      - "8080:8080"
+    restart: always
+
+volumes:
+  # Renomeado para corresponder ao volume acima
+  b30_postgres_data_v2:
