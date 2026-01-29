@@ -282,6 +282,7 @@
             `;
             detailsContent.innerHTML = tabsHtml;
 
+            // Preenche Aba Lucro Líquido (DRE)
             const revenue = document.getElementById('totalRevenue').innerText;
             const expenses = document.getElementById('totalExpenses').innerText;
             const profit = document.getElementById('totalProfit').innerText;
@@ -298,29 +299,25 @@
             `;
             document.getElementById('net-profit').innerHTML = netHtml;
 
-            const grossUrl = params ? `/finances/statistics/profit/gross/date-range${params}` : '/finances/statistics/profit/gross/total';
-            fetch(grossUrl)
-                .then(res => res.json())
-                .then(grossVal => {
-                    let grossHtml = `
-                        <div class="text-center p-4">
-                            <h4 class="text-muted mb-3">Lucro Bruto Total</h4>
-                            <h1 class="display-4 text-primary fw-bold mb-3">${formatCurrency(grossVal)}</h1>
-                            <p class="text-muted">Receita de Vendas - Custos Diretos (Material + Serviços)</p>
-                        </div>
-                    `;
-                    document.getElementById('gross-profit').innerHTML = grossHtml;
-                });
-
+            // Preenche Aba Por Item e Lucro Bruto (Tabela)
             if (!params) {
                 document.getElementById('item-profit').innerHTML = '<p>Selecione um período para ver o lucro por item.</p>';
+                document.getElementById('gross-profit').innerHTML = '<p>Selecione um período para ver o lucro bruto detalhado.</p>';
             } else {
                 const url = `/finances/statistics/profit/details/date-range${params}`;
                 fetch(url)
                     .then(res => res.json())
                     .then(data => {
+                        let totalRevenue = 0;
+                        let totalCost = 0;
+                        let totalProfit = 0;
+
                         let itemHtml = '<div class="table-responsive"><table class="table table-striped table-hover"><thead><tr><th>Tipo</th><th>Descrição</th><th>Receita (Pago)</th><th>Custo Est.</th><th>Lucro</th></tr></thead><tbody>';
                         data.forEach(d => {
+                            totalRevenue += d.revenue;
+                            totalCost += d.cost;
+                            totalProfit += d.profit;
+
                             let link = d.description;
                             if (d.type === 'Pedido') link = `<a href="/orders/details/${d.id}">${d.description}</a>`;
                             else link = `<a href="/products/details/${d.id}">Venda #${String(d.id).padStart(4, '0')} - ${d.description}</a>`;
@@ -335,6 +332,19 @@
                         });
                         itemHtml += '</tbody></table></div>';
                         document.getElementById('item-profit').innerHTML = itemHtml;
+
+                        // Preenche Aba Lucro Bruto com Tabela DRE
+                        let grossHtml = `
+                            <table class="table">
+                                <thead><tr><th>Item</th><th>Valor</th></tr></thead>
+                                <tbody>
+                                    <tr class="table-success"><td>(+) Receita Total (Vendas/Pedidos)</td><td>${formatCurrency(totalRevenue)}</td></tr>
+                                    <tr class="table-warning"><td>(-) Custos Totais (Material + Serviços)</td><td>${formatCurrency(totalCost)}</td></tr>
+                                    <tr class="table-primary fw-bold"><td>(=) Lucro Bruto</td><td>${formatCurrency(totalProfit)}</td></tr>
+                                </tbody>
+                            </table>
+                        `;
+                        document.getElementById('gross-profit').innerHTML = grossHtml;
                     });
             }
         }

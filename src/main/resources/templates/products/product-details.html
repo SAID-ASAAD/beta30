@@ -68,7 +68,7 @@
                         </div>
                         <div class="col-md-6 mb-2">
                             <label class="fw-bold">Valor em Estoque:</label>
-                            <p th:text="${'R$ ' + stockValue}"></p>
+                            <p th:text="${#numbers.formatCurrency(stockValue)}"></p>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label class="fw-bold">Valor Sugerido (Unit.):</label>
-                            <p th:text="${'R$ ' + product.preEstablishedValue}"></p>
+                            <p th:text="${#numbers.formatCurrency(product.preEstablishedValue)}"></p>
                         </div>
                         <div class="col-md-6 mb-2">
                             <label class="fw-bold">Total Vendido (Qtd):</label>
@@ -90,23 +90,36 @@
 
                     <div class="mb-2">
                         <label class="fw-bold">Valor Total Vendido:</label>
-                        <p th:text="${'R$ ' + totalSoldValue}"></p>
+                        <button class="btn btn-sm btn-outline-secondary ms-2" type="button" onclick="toggleVisibility('totalSoldValueContent', this)">Ver</button>
+                        <div id="totalSoldValueContent" style="display: none; margin-top: 5px; padding: 5px; background-color: #f8f9fa; border-radius: 5px; border: 1px solid #dee2e6;">
+                            <span th:text="${#numbers.formatCurrency(totalSoldValue)}"></span>
+                        </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label class="fw-bold">Material:</label>
-                            <p th:text="${'R$ ' + product.materialValue}"></p>
+                            <button class="btn btn-sm btn-outline-secondary ms-2" type="button" onclick="toggleVisibility('materialValueContent', this)">Ver</button>
+                            <div id="materialValueContent" style="display: none; margin-top: 5px; padding: 5px; background-color: #f8f9fa; border-radius: 5px; border: 1px solid #dee2e6;">
+                                <span th:text="${#numbers.formatCurrency(product.materialValue)}"></span>
+                            </div>
                         </div>
                         <div class="col-md-6 mb-2">
                             <label class="fw-bold">Serviço Externo:</label>
-                            <p th:text="${'R$ ' + product.externalServiceValue}"></p>
+                            <button class="btn btn-sm btn-outline-secondary ms-2" type="button" onclick="toggleVisibility('externalServiceValueContent', this)">Ver</button>
+                            <div id="externalServiceValueContent" style="display: none; margin-top: 5px; padding: 5px; background-color: #f8f9fa; border-radius: 5px; border: 1px solid #dee2e6;">
+                                <span th:text="${#numbers.formatCurrency(product.externalServiceValue)}"></span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="mb-2">
                         <label class="fw-bold">Observação de Produção:</label>
-                        <p class="text-muted fst-italic" th:text="${product.productionProcessNote != null ? product.productionProcessNote : 'Nenhuma observação.'}"></p>
+                        <button type="button" class="btn btn-sm btn-outline-info ms-2"
+                                th:attr="data-bs-note=${product.productionProcessNote != null ? product.productionProcessNote : 'Nenhuma observação.'}"
+                                onclick="showNoteModal(this)">
+                            Ver Observação
+                        </button>
                     </div>
                 </div>
             </div>
@@ -145,8 +158,14 @@
                         <th>Data</th>
                         <th>Cliente</th>
                         <th>Qtd</th>
-                        <th>Valor Unit.</th>
-                        <th>Total</th>
+                        <th>
+                            Valor Unit.
+                            <button class="btn btn-sm btn-outline-secondary ms-1" onclick="toggleColumnVisibility('unit-value-col', this)">Ver</button>
+                        </th>
+                        <th>
+                            Total
+                            <button class="btn btn-sm btn-outline-secondary ms-1" onclick="toggleColumnVisibility('total-value-col', this)">Ver</button>
+                        </th>
                         <th>Status Pagto</th>
                         <th>Ações</th>
                     </tr>
@@ -157,9 +176,13 @@
                         <td th:text="${#temporals.format(sell.saleDate, 'dd/MM/yyyy')}"></td>
                         <td><a th:href="@{/clients/details/{id}(id=${sell.client.id})}" th:text="${sell.client.name}"></a></td>
                         <td th:text="${sell.quantity}"></td>
-                        <td th:text="${'R$ ' + sell.unitValue}"></td>
-                        <td th:text="${'R$ ' + sell.totalValue}"></td>
-                        <td th:text="${sell.paymentStatus}"></td>
+                        <td>
+                            <span class="unit-value-col" style="display: none;" th:text="${#numbers.formatCurrency(sell.unitValue)}"></span>
+                        </td>
+                        <td>
+                            <span class="total-value-col" style="display: none;" th:text="${#numbers.formatCurrency(sell.totalValue)}"></span>
+                        </td>
+                        <td th:text="${sell.paymentStatus.description}"></td>
                         <td>
                             <a th:href="@{/finances/sells/edit/{id}(id=${sell.id})}" class="btn btn-sm btn-warning">Editar</a>
                             <form th:action="@{/finances/sells/delete/{id}(id=${sell.id})}" method="POST" style="display: inline;">
@@ -205,7 +228,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="establishedValue" class="form-label">Valor Unitário</label>
-                    <input type="number" step="0.01" class="form-control" id="establishedValue" th:field="*{establishedValue}" th:value="${product.preEstablishedValue}" required oninput="calculateTotal()">
+                    <input type="text" class="form-control currency-input" id="establishedValue" th:field="*{establishedValue}" th:value="${product.preEstablishedValue}" required oninput="calculateTotal()">
                 </div>
             </div>
 
@@ -216,7 +239,7 @@
 
             <div class="mb-3">
                 <label for="initialPayment" class="form-label">Pagamento Inicial</label>
-                <input type="number" step="0.01" class="form-control" id="initialPayment" th:field="*{initialPayment}">
+                <input type="text" class="form-control currency-input" id="initialPayment" th:field="*{initialPayment}">
             </div>
           </div>
           <div class="modal-footer">
@@ -228,12 +251,67 @@
   </div>
 </div>
 
+<!-- Modal de Observação -->
+<div class="modal fade" id="noteModal" tabindex="-1" aria-labelledby="noteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="noteModalLabel">Observação de Produção</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="noteContent" class="text-break"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
 <script>
+    $(document).ready(function(){
+        $('.currency-input').inputmask('currency', {
+            radixPoint: ',',
+            groupSeparator: '.',
+            prefix: 'R$ ',
+            autoUnmask: true,
+            removeMaskOnSubmit: true
+        });
+    });
+
+    function toggleVisibility(contentId, btn) {
+        const content = document.getElementById(contentId);
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            btn.textContent = 'Ocultar';
+        } else {
+            content.style.display = 'none';
+            btn.textContent = 'Ver';
+        }
+    }
+
+    function toggleColumnVisibility(className, btn) {
+        const elements = document.getElementsByClassName(className);
+        let isHidden = true;
+        if (elements.length > 0) {
+            isHidden = elements[0].style.display === 'none';
+        }
+
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].style.display = isHidden ? 'inline' : 'none';
+        }
+
+        btn.textContent = isHidden ? 'Ocultar' : 'Ver';
+    }
+
     function calculateTotal() {
         const qtd = parseFloat(document.getElementById('quantity').value) || 0;
         const val = parseFloat(document.getElementById('establishedValue').value) || 0;
         const total = qtd * val;
-        document.getElementById('totalValueModal').value = 'R$ ' + total.toFixed(2);
+        document.getElementById('totalValueModal').value = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
     function searchClientsModal() {
@@ -275,6 +353,13 @@
                 console.error('Erro na busca de clientes:', error);
                 errorDiv.style.display = 'block';
             });
+    }
+
+    function showNoteModal(btn) {
+        const note = btn.getAttribute('data-bs-note');
+        document.getElementById('noteContent').innerText = note;
+        const modal = new bootstrap.Modal(document.getElementById('noteModal'));
+        modal.show();
     }
 
     document.addEventListener('DOMContentLoaded', function() {

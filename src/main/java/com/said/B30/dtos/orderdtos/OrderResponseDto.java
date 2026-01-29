@@ -14,12 +14,15 @@ public record OrderResponseDto(Long id,
                                LocalDate orderDate,
                                @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
                                LocalDate deliveryDate,
+                               @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+                               LocalDate exitDate,
                                Double establishedValue,
                                Double externalServiceValue,
                                Double materialValue,
                                String invoice,
                                String productionProcessNote,
-                               PaymentStatus paymentStatus,
+                               String unexpectedIssue,
                                OrderStatus orderStatus,
+                               PaymentStatus paymentStatus,
                                Long clientId) {
 }

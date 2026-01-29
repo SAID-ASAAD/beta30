@@ -13,6 +13,8 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 @Mapper(componentModel = SPRING)
 public interface OrderMapper {
 
+    @Mapping(target = "unexpectedIssue", ignore = true)
+    @Mapping(target = "exitDate", ignore = true)
     @Mapping(target = "externalServiceValue", ignore = true)
     @Mapping(target = "payments", ignore = true)
     @Mapping(target = "paymentStatus", ignore = true)

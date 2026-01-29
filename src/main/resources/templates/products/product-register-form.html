@@ -63,22 +63,22 @@
         </div>
 
         <div class="mb-3">
-            <label for="materialValue" class="form-label">Valor Material (total gasto no lote)</label>
-            <input type="number" step="0.01" class="form-control" id="materialValue" th:field="*{materialValue}"
+            <label for="materialValue" class="form-label">Valor Material</label>
+            <input type="text" class="form-control currency-input" id="materialValue" th:field="*{materialValue}"
                    th:classappend="${#fields.hasErrors('materialValue')} ? 'is-invalid' : ''" required>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('materialValue')}" th:errors="*{materialValue}">Erro no Valor Material</div>
         </div>
 
         <div class="mb-3">
-            <label for="externalServiceValue" class="form-label">Valor Serviço Externo (total gasto no lote)</label>
-            <input type="number" step="0.01" class="form-control" id="externalServiceValue" th:field="*{externalServiceValue}"
+            <label for="externalServiceValue" class="form-label">Valor Serviço Externo</label>
+            <input type="text" class="form-control currency-input" id="externalServiceValue" th:field="*{externalServiceValue}"
                    th:classappend="${#fields.hasErrors('externalServiceValue')} ? 'is-invalid' : ''" required>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('externalServiceValue')}" th:errors="*{externalServiceValue}">Erro no Valor Serviço Externo</div>
         </div>
 
         <div class="mb-3">
-            <label for="preEstablishedValue" class="form-label">Valor Sugerido (valor unit.)</label>
-            <input type="number" step="0.01" class="form-control" id="preEstablishedValue" th:field="*{preEstablishedValue}"
+            <label for="preEstablishedValue" class="form-label">Valor Sugerido</label>
+            <input type="text" class="form-control currency-input" id="preEstablishedValue" th:field="*{preEstablishedValue}"
                    th:classappend="${#fields.hasErrors('preEstablishedValue')} ? 'is-invalid' : ''" required>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('preEstablishedValue')}" th:errors="*{preEstablishedValue}">Erro no Valor Sugerido</div>
         </div>
@@ -87,6 +87,20 @@
         <a href="/products" class="btn btn-danger">Voltar</a>
     </form>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.currency-input').inputmask('currency', {
+            radixPoint: ',',
+            groupSeparator: '.',
+            prefix: 'R$ ',
+            autoUnmask: true,
+            removeMaskOnSubmit: true
+        });
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
