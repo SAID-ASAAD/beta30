@@ -29,37 +29,51 @@ public class Order implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "categoria", nullable = false)
     private Category category;
+
     @Column(name = "descrição", nullable = false)
     private String description;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "data_do_pedido")
     private LocalDate orderDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "data_de_entrega", nullable = false)
     private LocalDate deliveryDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "data_de_saída")
     private LocalDate exitDate;
+
     @Column(name = "valor_cobrado", nullable = false)
     private Double establishedValue;
+
     @Column(name = "valor_serviço_terceiro")
     private Double externalServiceValue;
+
     @Column(name = "valor_de_material")
     private Double materialValue;
+
     @Column(name = "sinal", nullable = false)
     private Double deposit;
+
     @Column(name = "nota_fiscal")
     private String invoice;
+
     @Column(name = "observações_da_produção")
     private String productionProcessNote;
+
     @Column(name = "problema_inesperado")
-    private String unexpectedIssue; // Novo atributo
+    private String unexpectedIssue;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status_do_pedido")
     private OrderStatus orderStatus;
+
     @Column(name = "status_do_pagamento")
     private PaymentStatus paymentStatus;
 

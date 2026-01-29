@@ -21,7 +21,6 @@ import com.said.B30.dtos.productdtos.ProductSaleDto;
 import com.said.B30.dtos.productdtos.ProductUpdateRequestDto;
 import com.said.B30.infrastructure.enums.Category;
 import com.said.B30.infrastructure.enums.OrderStatus;
-import com.said.B30.infrastructure.enums.PaymentStatus;
 import com.said.B30.infrastructure.enums.ProductStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +45,7 @@ public class ViewExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleGenericException(Exception e, HttpServletRequest request) {
-        ModelAndView mv = new ModelAndView("error"); // Página de erro genérica
+        ModelAndView mv = new ModelAndView("error");
         mv.addObject("errorMessage", "Erro inesperado: " + e.getMessage());
         mv.addObject("exception", e);
         return mv;
@@ -70,12 +69,10 @@ public class ViewExceptionHandler {
             mv = new ModelAndView("orders/order-details");
             mv.addObject("order", order);
             mv.addObject("client", clientService.findClientById(order.clientId()));
-        } else { // Products
+        } else {
             ProductFullResponseDto product = productService.findProductById(id);
             mv = new ModelAndView("products/product-details");
             mv.addObject("product", product);
-            // Cliente removido do produto
-            // Adiciona DTO vazio para o modal de venda não quebrar
             mv.addObject("productSaleDto", new ProductSaleDto(null, null, null, null, null));
         }
         
@@ -92,7 +89,7 @@ public class ViewExceptionHandler {
             mv = handleClientDataEntry(path, request);
         } else if (path.contains("/orders")) {
             mv = handleOrderDataEntry(path, request);
-        } else { // Products
+        } else {
             mv = handleProductDataEntry(path, request);
         }
 
@@ -150,13 +147,13 @@ public class ViewExceptionHandler {
                 request.getParameter("description"),
                 parseDate(request.getParameter("orderDate")),
                 parseDate(request.getParameter("deliveryDate")),
-                parseDate(request.getParameter("exitDate")), // Adicionado exitDate
+                parseDate(request.getParameter("exitDate")),
                 parseDouble(request.getParameter("establishedValue")),
                 parseDouble(request.getParameter("externalServiceValue")),
                 parseDouble(request.getParameter("materialValue")),
                 request.getParameter("invoice"),
                 request.getParameter("productionProcessNote"),
-                request.getParameter("unexpectedIssue"), // Adicionado unexpectedIssue
+                request.getParameter("unexpectedIssue"),
                 parseOrderStatus(request.getParameter("orderStatus")),
                 parseLong(request.getParameter("clientId"))
             ));
@@ -180,17 +177,13 @@ public class ViewExceptionHandler {
             mv.addObject("productRequestDto", dto);
             return mv;
         } else if (path.contains("/sell")) {
-            // Tratamento específico para erro na venda
             String idStr = path.substring(path.lastIndexOf('/') + 1);
             Long id = Long.parseLong(idStr);
             
             ModelAndView mv = new ModelAndView("products/product-details");
             ProductFullResponseDto product = productService.findProductById(id);
             mv.addObject("product", product);
-            
-            // Cliente removido do produto
-            
-            // Reconstrói o DTO de venda com os dados tentados
+
             Long clientId = parseLong(request.getParameter("clientId"));
             Integer quantity = parseInt(request.getParameter("quantity"));
             Double establishedValue = parseDouble(request.getParameter("establishedValue"));
@@ -212,7 +205,6 @@ public class ViewExceptionHandler {
             
             return mv;
         } else {
-            // Edição
             String idStr = path.substring(path.lastIndexOf('/') + 1);
             Long id = Long.parseLong(idStr);
             ModelAndView mv = new ModelAndView("products/product-update-form");
@@ -222,17 +214,12 @@ public class ViewExceptionHandler {
                 parseInt(request.getParameter("quantity")),
                 request.getParameter("productionProcessNote"),
                 parseDate(request.getParameter("productionDate")),
-                // saleDate removido
                 parseDouble(request.getParameter("materialValue")),
                 parseDouble(request.getParameter("externalServiceValue")),
                 parseDouble(request.getParameter("preEstablishedValue")),
-                // establishedValue removido
                 parseProductStatus(request.getParameter("productStatus"))
-                // invoice removido
-                // clientId removido
             ));
             mv.addObject("productStatuses", ProductStatus.values());
-            // paymentStatuses removido
             return mv;
         }
     }
@@ -257,7 +244,6 @@ public class ViewExceptionHandler {
         return mv;
     }
 
-    // Helpers para parsing
     private Double parseDouble(String value) {
         try { return value != null && !value.isEmpty() ? Double.parseDouble(value) : null; } catch (NumberFormatException e) { return null; }
     }
